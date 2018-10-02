@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import entity
+from entity import Entity, Enemy
 
 import sys
 # Use the pygame library

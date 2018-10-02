@@ -10,3 +10,21 @@ class Entity:
 
     image = pygame.image.load("img.png")
 
+class Enemy(Entity):
+    speed = 0
+    health = 1
+
+class Player(Enemy):
+    weapon = []
+
+class Projectile(Entity):
+    speed = 1
+    damage = 1
+    duration = 10
+    # Owner # How would this get implemented?
+
+# class Guided(Projectile):
+
+class Star(Entity):
+    mass = 100
+
