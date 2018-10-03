@@ -3,28 +3,33 @@ import pygame
 from pygame.locals import *
 
 class Entity:
-    loc = [0.0, 0.0]
-    vel = [0.0, 0.0]
-    rotation = 0
-    radius = 0
+    def __init__(self, loc, vel, rotation, radius, img_path):
+        loc = loc   # list of two floating points (x, y)
+        vel = vel   # list of two floating points (x, y)
+        rotation = rotation
+        radius = radius
 
-    image = pygame.image.load("img.png")
+        image = pygame.image.load(img_path)
 
 class Enemy(Entity):
-    speed = 0
-    health = 1
+    def __init__(self, speed, health):
+        speed = speed
+        health = health
 
 class Player(Enemy):
-    weapon = []
+    def __init__(self, weapon):
+        weapon = weapon # Is a list of weapons
 
 class Projectile(Entity):
-    speed = 1
-    damage = 1
-    duration = 10
-    # Owner # How would this get implemented?
+    def __init__(self, speed, damage, duration):
+        speed = speed
+        damage = damage
+        duration = duration
+        # Owner # How would this get implemented?
 
 # class Guided(Projectile):
 
 class Star(Entity):
-    mass = 100
+    def __init__(self, mass):
+        mass = 100
 

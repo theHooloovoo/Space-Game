@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from entity import Entity, Enemy, Player, Projectile, Star
+from level import Level
 
 import sys
 # Use the pygame library
