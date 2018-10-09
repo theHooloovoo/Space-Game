@@ -17,19 +17,21 @@ img = pygame.image.load("img.png")
 ent_list = []
 star_list = []
 
-ent_list.append(Entity([200.0, 400.0], [0.00,  1.00],  50.0,  0.0, img))
-ent_list.append(Entity([300.0, 400.0], [0.00,  2.00],  50.0,  0.0, img))
-ent_list.append(Entity([400.0, 400.0], [0.00,  3.00],  50.0,  0.0, img))
-ent_list.append(Entity([500.0, 400.0], [0.00,  4.00],  50.0,  0.0, img))
-ent_list.append(Entity([550.0, 400.0], [0.00,  5.00],  50.0,  0.0, img))
-ent_list.append(Enemy( [200.0, 400.0], [0.0, 3.5], 50.0, 0.0, 0.0, 100, img))
+ent_list.append(Entity([400.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Entity([450.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Entity([500.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Entity([550.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Entity([600.0, 200.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Enemy( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.0, 100, img))
 
 star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000.0, img))
 # star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
 
 for e in ent_list:
-    # e.vel = e.get_orbital_velocity(star_list[0])
-    print("Vel:", e.vel[0], e.vel[1])
+    if type(e) != Enemy:
+        v = e.get_orbital_velocity(star_list[0])
+        e.vel = v
+        print("Orbital Vel:", v[0], v[1])
 
 delta_time = 1.0
 
@@ -49,7 +51,8 @@ while 1:
 
     for e in ent_list:
         e.iterate_location(delta_time)
-        # e.look_at(star_list[0])
+        e.clear_force()
+        e.look_at(star_list[0])
 
     # Paint ===========================
     window.fill([0,0,0])
