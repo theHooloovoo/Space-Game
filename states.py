@@ -26,6 +26,20 @@ class State:
         """ Called iteratively while the state is the top of the stack """
         print("State run")
 
+class PauseState(State):
+	""" The controller for the pause menu """
+	def __init__(self):
+		pass
+	
+	def activate(self):
+		pass
+
+	def deactivate(self):
+		pass
+
+	def run(self, window):
+		pass
+
 class MenuState(State):
 	""" The controller for the main menu """
 	def __init__(self):
@@ -38,7 +52,18 @@ class MenuState(State):
 		print("Menu deactivate")
 	
 	def run(self, window):
-		print("Menu run " + str(i))
+		""" """
+		for event in pygame.event.get():
+			if (event.type == pygame.KEYUP):
+				if (event.key == pygame.K_ESCAPE):
+					pop()
+				elif (event.key == pygame.K_A or event.key == pygame.K_UP):
+					pass # Select up
+				elif (event.key == pygame.K_S or event.key == pygame.K_DOWN):
+					pass # Select down
+				elif (event.key == pygame.K_RETURN):
+					pass # Load selected state
+		print("Menu run ")
 
 class GameState(State):
 	""" The controller for the game """
@@ -68,6 +93,8 @@ class GameState(State):
 				sys.exit()
 			if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
 				pop()
+				break
+
 		# Physics
 		for e in self.ent_list:
 			e.iterate_force(self.star_list)
