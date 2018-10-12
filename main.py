@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from entity import Entity, Enemy, Player, Projectile, Star
-from level import Level
+from states import *
+from entity import *
+from level import *
 
 import sys
 
@@ -67,3 +68,7 @@ while 1:
 
     pygame.display.flip()
 
+push(GameState())
+while (size() > 0):
+	top().run(window)
+  
