@@ -4,9 +4,13 @@ from entity import Entity, Enemy, Player, Projectile, Star
 from level import Level
 
 import sys
+
 # Use the pygame library
 import pygame
 from pygame.locals import *
+
+# Used for object serialization into JSON format
+import pickle
 
 pygame.init()
 window = pygame.display.set_mode([1200, 800])
@@ -24,7 +28,7 @@ ent_list.append(Entity([550.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
 ent_list.append(Entity([600.0, 200.0], [0.00,  0.00],  50.0,  0.0, img))
 ent_list.append(Enemy( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.0, 100, img))
 
-star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000.0, img))
+star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000000000000.0, img))
 # star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
 
 for e in ent_list:
