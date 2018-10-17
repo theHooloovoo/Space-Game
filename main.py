@@ -26,17 +26,16 @@ ent_list.append(Entity([400.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
 ent_list.append(Entity([450.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
 ent_list.append(Entity([500.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
 ent_list.append(Entity([550.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([600.0, 200.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Enemy( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.0, 100, img))
+ent_list.append(Entity([600.0, 420.0], [0.00,  0.00],  50.0,  0.0, img))
+ent_list.append(Enemy( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img))
 
 star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000000000000.0, img))
 # star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
 
 for e in ent_list:
-    if type(e) != Enemy:
-        v = e.get_orbital_velocity(star_list[0])
-        e.vel = v
-        print("Orbital Vel:", v[0], v[1])
+    v = e.get_orbital_velocity(star_list[0])
+    e.vel = v
+    print("Orbital Vel:", v[0], v[1])
 
 delta_time = 1.0
 
@@ -46,6 +45,16 @@ while 1:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
+        if event.type is KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                ent_list[5].use_booster()
+                print("BOOSTING!")
+            if event.key == pygame.K_a:
+                ent_list[5].rotation += 0.1
+                print("TURNING!")
+            if event.key == pygame.K_d:
+                ent_list[5].rotation -= 0.1
+                print("TURNING!")
 
     # Physics Loop ====================
     for e in ent_list:
@@ -57,7 +66,9 @@ while 1:
     for e in ent_list:
         e.iterate_location(delta_time)
         e.clear_force()
-        e.look_at(star_list[0])
+        # e.look_at(star_list[0])
+        if type(e) == Enemy:
+            e.point_to(pygame.mouse.get_pos())
 
     # Paint ===========================
     window.fill([0,0,0])
@@ -67,6 +78,10 @@ while 1:
         e.draw(window)
 
     pygame.display.flip()
+
+    pressed_names = []
+    if len(pressed_names) != 0:
+        print(pressed_names)
 
 push(GameState())
 while (size() > 0):
