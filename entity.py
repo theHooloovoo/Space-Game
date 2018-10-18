@@ -45,6 +45,9 @@ class Entity:
 
         return dx*dx + dy*dy
 
+    def get_location(self):
+        return self.loc
+
     def delta_location(self, body):
         """ Returns the difference in x and y coordinates from the given
             body, as a list of floats.
@@ -141,7 +144,7 @@ class Entity:
         delta = [loc[0] - self.loc[0], loc[1] - self.loc[1]]
         self.rotation = atan2(delta[1], delta[0])
 
-    def draw(self, window):
+    def draw(self, window, cam, offset):
         """ Given a window to draw on, this method internally rotates, scales and
             moves the Entity's image field, then paints it onto the window. 
             Entity's image is scaled such that it's width is equal to the Entity's
@@ -152,7 +155,29 @@ class Entity:
         # Re-Transform the image for each frame
         transform = pygame.transform.rotozoom(self.image,
                                               degrees(-self.rotation) - 90,
-                                              s)
+                                              s * cam.get_zoom())
+        image_loc = transform.get_rect()
+        # Offset the image so that it is centered at the objects location
+        offset = [
+                  self.loc[0] - image_loc.width/2.0,
+                  self.loc[1] - image_loc.height/2.0,
+                 ]
+        image_loc = image_loc.move(offset)
+        # Maybe add guards to check if image is outisde the window?
+        window.blit(transform, image_loc)
+
+    def draw2(self, window, cam, offset):
+        """ Given a window to draw on, this method internally rotates, scales and
+            moves the Entity's image field, then paints it onto the window. 
+            Entity's image is scaled such that it's width is equal to the Entity's
+            radius. 
+        """
+        image_loc = self.image.get_rect().width
+        s = self.radius / self.image.get_rect().width
+        # Re-Transform the image for each frame
+        transform = pygame.transform.rotozoom(self.image,
+                                              degrees(-self.rotation) - 90,
+                                              s * cam.get_zoom())
         image_loc = transform.get_rect()
         # Offset the image so that it is centered at the objects location
         offset = [

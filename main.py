@@ -15,6 +15,7 @@ import pickle
 
 pygame.init()
 window = pygame.display.set_mode([1200, 800])
+cam = Camera(1200, 800)
 
 img = pygame.image.load("img.png")
 # image_rect = image.get_rect()
@@ -35,7 +36,6 @@ star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000000000000.0, img
 for e in ent_list:
     v = e.get_orbital_velocity(star_list[0])
     e.vel = v
-    print("Orbital Vel:", v[0], v[1])
 
 delta_time = 1.0
 
@@ -50,11 +50,9 @@ while 1:
                 ent_list[5].use_booster()
                 print("BOOSTING!")
             if event.key == pygame.K_a:
-                ent_list[5].rotation += 0.1
-                print("TURNING!")
-            if event.key == pygame.K_d:
-                ent_list[5].rotation -= 0.1
-                print("TURNING!")
+                cam.zoom_in(0.1)
+            if event.key == pygame.K_KP_PLUS:
+                cam.zoom_in(-0.1)
 
     # Physics Loop ====================
     for e in ent_list:
@@ -73,9 +71,9 @@ while 1:
     # Paint ===========================
     window.fill([0,0,0])
     for s in star_list:
-        s.draw(window)
+        s.draw(window, cam, [0,0])
     for e in ent_list:
-        e.draw(window)
+        e.draw(window, cam, [0,0])
 
     pygame.display.flip()
 
