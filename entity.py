@@ -9,9 +9,9 @@ import pygame
 from pygame.locals import *
 
 class Entity:
-    """ Base Class upon which the rest of the ingame objects are based. Contains
-        all of the basic methods needed to be displayed on screen, as well as all 
-        of the basic physics methods to drive movement.
+    """ Base Class upon which the rest of the ingame objects are based.
+        Contains all of the basic methods needed to be displayed on screen,
+        as well as all of the basic physics methods to drive movement.
     """
     GRAV = 30.00
     def __init__(self, loc, vel, radius, rotation, img):
@@ -144,13 +144,18 @@ class Entity:
         delta = [loc[0] - self.loc[0], loc[1] - self.loc[1]]
         self.rotation = atan2(delta[1], delta[0])
 
-    def draw(self, window, cam, offset):
+    def draw(self, window, cam):
         """ Given a window to draw on, this method internally rotates, scales and
             moves the Entity's image field, then paints it onto the window. 
             Entity's image is scaled such that it's width is equal to the Entity's
             radius. 
         """
-        image_loc = self.image.get_rect().width
+        screen_width  = window.get_width()
+        screen_height = window.get_height()
+        # Get the screen-space for the Entity
+        screen_space = cam.get_screen_space(window, self.loc)
+        # Scale the image based on the Entity's radius
+        image_width = self.image.get_rect().width
         s = self.radius / self.image.get_rect().width
         # Re-Transform the image for each frame
         transform = pygame.transform.rotozoom(self.image,
@@ -158,13 +163,11 @@ class Entity:
                                               s * cam.get_zoom())
         image_loc = transform.get_rect()
         # Offset the image so that it is centered at the objects location
-        offset = [
-                  self.loc[0] - image_loc.width/2.0,
-                  self.loc[1] - image_loc.height/2.0,
-                 ]
-        image_loc = image_loc.move(offset)
+        screen_space[0] -= image_loc.width/2.0
+        screen_space[1] -= image_loc.height/2.0
+        new_img_loc = image_loc.move(screen_space)
         # Maybe add guards to check if image is outisde the window?
-        window.blit(transform, image_loc)
+        window.blit(transform, new_img_loc)
 
     def draw2(self, window, cam, offset):
         """ Given a window to draw on, this method internally rotates, scales and
@@ -188,7 +191,7 @@ class Entity:
         # Maybe add guards to check if image is outisde the window?
         window.blit(transform, image_loc)
 
-class Enemy(Entity):
+class Agent(Entity):
     """ Extension of the Entity class. Used as the basic agents of the game.
     """
     def __init__(self, loc, vel, radius, rotation, booster_speed, health, img):
@@ -200,14 +203,14 @@ class Enemy(Entity):
         self.image_scrap = img  # Seperate image used for explosion()
 
     def harm(self, damage):
-        """ Decrement the Enemy's health.
+        """ Decrement the Agent's health.
         """
         self.health -= damage
         if self.health <= 0:
             self.is_alive = False
 
     def use_booster(self):
-        """ Add the force of the Enemy's booster if it is active.
+        """ Add the force of the Agent's booster if it is active.
         """
         # if self.booster_on:
         self.force[0] += self.booster_speed * cos(self.rotation)
@@ -243,10 +246,6 @@ class Enemy(Entity):
                             0.0,
                             self.image_scrap))
         return result
-
-class Player(Enemy):
-    def __init__(self, weapons):
-        weapons = weapons # Is a list of weapons
 
 class Projectile(Entity):
     def __init__(self, body, speed, damage, duration, img):
