@@ -37,13 +37,15 @@ class Camera:
         # Scale those differences
         dif_loc[0] *= self.zoom
         dif_loc[1] *= self.zoom
+        dif_loc[0] += window.get_width()/2
+        dif_loc[1] += window.get_height()/2
         return dif_loc
 
     def pointer_game_space(self, window, loc):
         """ Convert pixel location on screen into game-space. """
         return [
-                1/self.zoom * self.loc[0] - loc[0],
-                1/self.zoom * self.loc[1] - loc[1],
+                1/self.zoom * self.loc[0] - loc[0] + window.get_width()/2,
+                1/self.zoom * self.loc[1] - loc[1] + window.get_height()/2,
                ]
 
 class Level:

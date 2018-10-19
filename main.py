@@ -16,7 +16,7 @@ import pickle
 pygame.init()
 window = pygame.display.set_mode([1200, 800])
 cam = Camera()
-cam.move_to([400.0, 400.0])
+cam.move_to([0.0, 0.0])
 
 img = pygame.image.load("img.png")
 # image_rect = image.get_rect()
