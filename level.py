@@ -1,6 +1,8 @@
 
 from entity import Entity, Agent, Projectile, Star
 
+import pygame
+
 class Camera:
     """ This class is used to get different views into the level. This will
         handle correctly transforming and scaling the Entity's in the level,
@@ -37,15 +39,30 @@ class Camera:
         # Scale those differences
         dif_loc[0] *= self.zoom
         dif_loc[1] *= self.zoom
+        # Adjust for screen size
         dif_loc[0] += window.get_width()/2
         dif_loc[1] += window.get_height()/2
         return dif_loc
 
     def pointer_game_space(self, window, loc):
         """ Convert pixel location on screen into game-space. """
+        """
+        # Given the pixel coordinates
+        dif_loc = [self.loc[0], self.loc[1]]
+        # Adjust for screen size
+        dif_loc[0] -= window.get_width()/2
+        dif_loc[1] -= window.get_height()/2
+        # Scale
+        dif_loc[0] /= self.get_zoom()
+        dif_loc[1] /= self.get_zoom()
+        # Translate
+        dif_loc[0] += loc[0]
+        dif_loc[1] += loc[1]
+        return dif_loc
+        """
         return [
-                1/self.zoom * self.loc[0] - loc[0] + window.get_width()/2,
-                1/self.zoom * self.loc[1] - loc[1] + window.get_height()/2,
+                -window.get_width()/2  / self.zoom + loc[0] - self.loc[0],
+                -window.get_height()/2 / self.zoom + loc[1] - self.loc[1],
                ]
 
 class Level:
@@ -83,8 +100,10 @@ class Level:
             the force applied to each object, increment the velocity by that,
             then increment the location by that.
         """
+        self.player.iterate_force(self.star_list)
         for e in self.entity_list:
             e.iterate_force(self.star_list)
+        self.player.iterate_velocity(dt)
         for e in self.entity_list:
             e.iterate_velocity(dt)
         for e in self.entity_list:
@@ -92,18 +111,25 @@ class Level:
             # Reset the forces applied, so that we don't super charge the
             # velocities for all of the entities
             e.clear_force()
+        self.player.iterate_location(dt)
+        self.player.clear_force()
 
     def draw_all(self, window):
+        # Clear the window so that all of the pixels are black
+        window.fill([0,0,0])
+        # Step through each list, and draw the Entitys
         for e in self.star_list:
             e.draw(window, self.cam)
-
-        for e in self.ent_list:
-            e.draw(window, self.cam)
-
         for e in self.agent_list:
             e.draw(window, self.cam)
-
+        for e in self.entity_list:
+            e.draw(window, self.cam)
         for e in self.projectile_list:
             e.draw(window, self.cam)
+        # Don't forget to draw the player!
+        self.player.draw(window, self.cam)
+        # The currently drawn image was the back-buffer.
+        # So now we need to swap buffers so the image displays.
+        pygame.display.flip()
 
 

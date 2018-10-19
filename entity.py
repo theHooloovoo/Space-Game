@@ -169,28 +169,6 @@ class Entity:
         # Maybe add guards to check if image is outisde the window?
         window.blit(transform, new_img_loc)
 
-    def draw2(self, window, cam, offset):
-        """ Given a window to draw on, this method internally rotates, scales and
-            moves the Entity's image field, then paints it onto the window. 
-            Entity's image is scaled such that it's width is equal to the Entity's
-            radius. 
-        """
-        image_loc = self.image.get_rect().width
-        s = self.radius / self.image.get_rect().width
-        # Re-Transform the image for each frame
-        transform = pygame.transform.rotozoom(self.image,
-                                              degrees(-self.rotation) - 90,
-                                              s * cam.get_zoom())
-        image_loc = transform.get_rect()
-        # Offset the image so that it is centered at the objects location
-        offset = [
-                  self.loc[0] - image_loc.width/2.0,
-                  self.loc[1] - image_loc.height/2.0,
-                 ]
-        image_loc = image_loc.move(offset)
-        # Maybe add guards to check if image is outisde the window?
-        window.blit(transform, image_loc)
-
 class Agent(Entity):
     """ Extension of the Entity class. Used as the basic agents of the game.
     """
