@@ -10,21 +10,21 @@ from pygame.locals import *
 __author__ = "Silas Agnew"
 
 class State:
-    """ Base class for all game "states" """
-    def __init__(self):
-        pass
+	""" Base class for all game "states" """
+	def __init__(self):
+		pass
 
-    def activate(self):
-        """ Called whenever the state moves to the top of the stack """
-        print("State activate")
+	def activate(self):
+		""" Called whenever the state moves to the top of the stack """
+		print("State activate")
 
-    def deactivate(self):
-        """ Called whenever the state is no longer the top of the stack """
-        print("State deactivate")
+	def deactivate(self):
+		""" Called whenever the state is no longer the top of the stack """
+		print("State deactivate")
 
-    def run(self, window):
-        """ Called iteratively while the state is the top of the stack """
-        print("State run")
+	def run(self, window):
+		""" Called iteratively while the state is the top of the stack """
+		print("State run")
 
 class PauseState(State):
 	""" The controller for the pause menu """
@@ -67,19 +67,11 @@ class MenuState(State):
 
 class GameState(State):
 	""" The controller for the game """
-	def __init__(self):
-		self.ent_list = []
-		self.star_list = []		
-		
-		self.ent_list.append(Entity([400.0, 400.0], [0.00, 1.00], 10.0, 0.0, "img.png"))
-		self.ent_list.append(Entity([500.0, 400.0], [0.00, 3.50], 10.0, 45.0, "img.png"))
-		self.ent_list.append(Entity([110.0, 100.0], [0.50, -0.20], 10.0, 45.0, "img.png"))
-		self.ent_list.append(Entity([100.0, 110.0], [0.00, 0.50], 10.0, 45.0, "img.png"))
-		
-		self.star_list.append(Star([600.0, 400.0], [0.0, 0.0], 100.0, 100000.0, "img.png"))
-		self.star_list.append(Star([1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, "img.png"))
-		
-		self.delta_time = 5.0
+	def __init__(self, lvl):
+		self.level = lvl
+		self.delta_time = 1.0
+		self.timer = pygame.time.Clock()
+		self.elapsed_time = self.timer.tick()
 
 	def activate(self):
 		pass
@@ -88,31 +80,21 @@ class GameState(State):
 		pass
 
 	def run(self, window):
+		dt = self.timer.tick()
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				sys.exit()
 			if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
 				pop()
 				break
+			if event.type is KEYDOWN:
+				if event.key == pygame.K_SPACE:
+					self.level.player.use_booster()
 
 		# Physics
-		for e in self.ent_list:
-			e.iterate_force(self.star_list)
-		
-		for e in self.ent_list:
-			e.iterate_velocity(self.delta_time)
-
-		for e in self.ent_list:
-			e.iterate_location(self.delta_time)
-
+		self.level.step_physics(dt * 0.07)
 		# Paint
-		window.fill([0,0,0])
-		for s in self.star_list:
-			s.draw(window)
-		for e in self.ent_list:
-			e.draw(window)
-
-		pygame.display.flip()
+		self.level.draw_all(window)
 
 
 # Current states of the program

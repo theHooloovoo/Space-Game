@@ -14,7 +14,7 @@ from pygame.locals import *
 import pickle
 
 pygame.init()
-window = pygame.display.set_mode([1200, 800])
+window = pygame.display.set_mode([1280, 800])
 cam = Camera()
 cam.move_to([0.0, 0.0])
 
@@ -25,34 +25,40 @@ img = pygame.image.load("img.png")
 ent_list = []
 star_list = []
 
-ent_list.append(Entity([-100, 100], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([100, -100], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([200,  200], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([-200, 200], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([200, -200], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Agent( [-200, -200], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img))
-
 star_list.append(Star( [0.0, 0.0], [0.0, 0.0], 100.0, 100000000000000.0, img))
+player = Agent( [150.0, 0.0], [0.0, 0.0], 50.0, 0.0, 0.1, 100, img)
+player.vel = player.get_orbital_velocity(star_list[0])
+
+lvl1 = Level(player, ent_list, [], star_list)
+
+lvl1.add_ent(Entity([-100, 100], [0.00,  0.00],  50.0,  0.0, img))
+lvl1.add_ent(Entity([100, -100], [0.00,  0.00],  50.0,  0.0, img))
+lvl1.add_ent(Entity([200,  200], [0.00,  0.00],  50.0,  0.0, img))
+lvl1.add_ent(Entity([-200, 200], [0.00,  0.00],  50.0,  0.0, img))
+lvl1.add_ent(Entity([200, -200], [0.00,  0.00],  50.0,  0.0, img))
+lvl1.add_ent(Agent( [-200, -200], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img))
+
 # star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
+
+print("Entities:\t", len(lvl1.entity_list))
+print("Stars:\t", len(lvl1.star_list))
+print("Agents:\t", len(lvl1.agent_list))
+print("Projectiles:\t", len(lvl1.projectile_list))
 
 for e in ent_list:
     v = e.get_orbital_velocity(star_list[0])
     e.vel = v
 
-player = Agent( [150.0, 0.0], [0.0, 0.0], 50.0, 0.0, 0.1, 100, img)
-player.vel = player.get_orbital_velocity(star_list[0])
-
 delta_time = 1.0
 
-lvl1 = Level(player, ent_list, [], star_list)
-lvl1.cam.move_to([3,3])
-
 initial_point = [10, 5]
+print(lvl1.cam.loc)
 gs_ss = lvl1.cam.get_screen_space(window, initial_point)
-print("Game Space -> Screen Space\t", initial_point, "\t->\t", gs_ss)
-ss_gs = lvl1.cam.pointer_game_space(window, initial_point)
-print("Screen Space-> Game Space\t", gs_ss, "\t->\t", ss_gs)
+ss_gs = lvl1.cam.pointer_game_space(window, gs_ss)
+end_point = lvl1.cam.get_screen_space(window, ss_gs)
+print(initial_point, "->", gs_ss, "->", ss_gs, "->", end_point)
 
+"""
 while 1:
 
     # Check Events ====================
@@ -78,8 +84,9 @@ while 1:
     pressed_names = []
     if len(pressed_names) != 0:
         print(pressed_names)
+"""
 
-push(GameState())
+push(GameState(lvl1))
 while (size() > 0):
 	top().run(window)
   

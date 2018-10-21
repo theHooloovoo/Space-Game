@@ -13,7 +13,7 @@ class Entity:
         Contains all of the basic methods needed to be displayed on screen,
         as well as all of the basic physics methods to drive movement.
     """
-    GRAV = 30.00
+    GRAV = 12.00
     def __init__(self, loc, vel, radius, rotation, img):
         """ loc & vel are both [float; 2].
             radius & rotation are both float

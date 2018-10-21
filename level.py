@@ -46,24 +46,24 @@ class Camera:
 
     def pointer_game_space(self, window, loc):
         """ Convert pixel location on screen into game-space. """
-        """
         # Given the pixel coordinates
-        dif_loc = [self.loc[0], self.loc[1]]
-        # Adjust for screen size
-        dif_loc[0] -= window.get_width()/2
-        dif_loc[1] -= window.get_height()/2
+        dif_loc = [
+                   -1 * (loc[0] - window.get_width()/2 ),
+                   -1 * (loc[1] - window.get_height()/2)
+                  ]
         # Scale
         dif_loc[0] /= self.get_zoom()
         dif_loc[1] /= self.get_zoom()
         # Translate
-        dif_loc[0] += loc[0]
-        dif_loc[1] += loc[1]
+        dif_loc[0] += self.loc[0]
+        dif_loc[1] += self.loc[1]
         return dif_loc
         """
         return [
                 -window.get_width()/2  / self.zoom + loc[0] - self.loc[0],
                 -window.get_height()/2 / self.zoom + loc[1] - self.loc[1],
                ]
+        """
 
 class Level:
     def __init__(self, player, ents, agents, stars):
@@ -100,19 +100,39 @@ class Level:
             the force applied to each object, increment the velocity by that,
             then increment the location by that.
         """
+        # Force
         self.player.iterate_force(self.star_list)
         for e in self.entity_list:
             e.iterate_force(self.star_list)
+        for e in self.agent_list:
+            e.iterate_force(self.star_list)
+        for e in self.projectile_list:
+            e.iterate_force(self.star_list)
+        # Velocity
         self.player.iterate_velocity(dt)
         for e in self.entity_list:
             e.iterate_velocity(dt)
+        for e in self.agent_list:
+            e.iterate_velocity(dt)
+        for e in self.projectile_list:
+            e.iterate_velocity(dt)
+        # Location
+        self.player.iterate_location(dt)
         for e in self.entity_list:
             e.iterate_location(dt)
-            # Reset the forces applied, so that we don't super charge the
-            # velocities for all of the entities
-            e.clear_force()
-        self.player.iterate_location(dt)
+        for e in self.agent_list:
+            e.iterate_location(dt)
+        for e in self.projectile_list:
+            e.iterate_location(dt)
+        # Reset the forces applied, so that we don't super charge the
+        # velocities for all of the entities
         self.player.clear_force()
+        for e in self.entity_list:
+            e.clear_force()
+        for e in self.agent_list:
+            e.clear_force()
+        for e in self.projectile_list:
+            e.clear_force()
 
     def draw_all(self, window):
         # Clear the window so that all of the pixels are black
