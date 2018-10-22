@@ -9,16 +9,20 @@ import pygame
 from pygame.locals import *
 
 class Entity:
-    """ Base Class upon which the rest of the ingame objects are based. Contains
-        all of the basic methods needed to be displayed on screen, as well as all 
-        of the basic physics methods to drive movement.
+    """ Base Class upon which the rest of the ingame objects are based.
+        Contains all of the basic methods needed to be displayed on screen,
+        as well as all of the basic physics methods to drive movement.
     """
-    GRAV = 30.00
-    def __init__(self, loc, vel, radius, rotation, img):
+    # Internal Gravitaional Constant
+    GRAV = 12.00
+    # Entities further from the origin than this will drug back towards the system
+    DAMP_DIST = 1000.0
+    def __init__(self, loc, vel, mass, radius, rotation, img):
         """ loc & vel are both [float; 2].
             radius & rotation are both float
             img is a pygame.image.Surface
         """
+        self.mass = mass
         self.loc = loc   # list of two floating points (x, y)
         self.vel = vel   # list of two floating points (x, y)
         # force is used to determine how to update velocity
@@ -27,6 +31,7 @@ class Entity:
         self.rotation = rotation    # In radians
         self.rot_delta = 0.0        # Rotational speed (also in radius)
         self.image = img
+        self.is_active = True
 
     def distance_to(self, body):
         """ Returns the euclidean distance to the given body, as a float.
@@ -46,6 +51,7 @@ class Entity:
         return dx*dx + dy*dy
 
     def get_location(self):
+        """ Returns the location of Entity as a [float, float]. """
         return self.loc
 
     def delta_location(self, body):
@@ -54,16 +60,15 @@ class Entity:
         """
         dx = body.loc[0] - self.loc[0]
         dy = body.loc[1] - self.loc[1]
-
         return [dx, dy]
 
     def delta_velocity(self, body):
-        vx = body.vel[0] - self.vel[0]
-        vy = body.vel[1] - self.vel[1]
+        """ Returns the difference in velocities between the two bodies. """
+        dx = body.vel[0] - self.vel[0]
+        dy = body.vel[1] - self.vel[1]
+        return [dx, dy]
 
-        return [vx, vy]
-
-    def touching(self, body):
+    def is_touching(self, body):
         """ Returns True if self and body are touching. Collision detection
             upon two circles.
         """
@@ -72,6 +77,22 @@ class Entity:
             return True
         else:
             return False
+    
+    def resolve_collisions(self, body):
+        """ Calculate and apply the force genated from the two bodies
+            colliding.
+        """
+        # F = m * a
+        delta_loc = self.delta_location(body)
+        delta_vel = self.delta_velocity(body)
+        angle = atan2(delta_loc[1], delta_loc[0])
+        magnitude = sqrt(delta_vel[1]**2 + delta_vel[0]**2)
+        # Apply to self
+        self.force[0] -= magnitude * cos(angle) / self.mass * 1.05
+        self.force[1] -= magnitude * sin(angle) / self.mass * 1.05
+        # Apply to the opposing body
+        body.force[0] += magnitude * cos(angle) / body.mass * 1.05
+        body.force[1] += magnitude * sin(angle) / body.mass * 1.05
 
     def iterate_location(self, dt):
         """ Increments the Entity's location by the Entities experienced
@@ -109,6 +130,12 @@ class Entity:
                 star_force[1] += magnitude * sin(radians)
         self.force[0] += star_force[0]
         self.force[1] += star_force[1]
+        # Stop objects from escaping system
+        d = sqrt(self.loc[0]**2 + self.loc[1]**2)
+        if d >= Entity.DAMP_DIST:
+            angle = atan2(self.loc[1], self.loc[0])
+            self.force[0] -= 0.2 * cos(angle)
+            self.force[1] -= 0.2 * sin(angle)
 
     def get_orbital_velocity(self, body, counter_clockwise=True):
         """ Calculates the velocity needed to orbit the given body with an 
@@ -144,78 +171,73 @@ class Entity:
         delta = [loc[0] - self.loc[0], loc[1] - self.loc[1]]
         self.rotation = atan2(delta[1], delta[0])
 
-    def draw(self, window, cam, offset):
+    def draw(self, window, cam):
         """ Given a window to draw on, this method internally rotates, scales and
             moves the Entity's image field, then paints it onto the window. 
             Entity's image is scaled such that it's width is equal to the Entity's
             radius. 
         """
-        image_loc = self.image.get_rect().width
-        s = self.radius / self.image.get_rect().width
+        # Get the screen-space for the Entity
+        screen_space = cam.get_screen_space(window, self.loc)
+        # Scale the image based on the Entity's radius
+        image_width = self.image.get_rect().width
+        s = 2 * self.radius / self.image.get_rect().width
         # Re-Transform the image for each frame
         transform = pygame.transform.rotozoom(self.image,
                                               degrees(-self.rotation) - 90,
                                               s * cam.get_zoom())
         image_loc = transform.get_rect()
         # Offset the image so that it is centered at the objects location
-        offset = [
-                  self.loc[0] - image_loc.width/2.0,
-                  self.loc[1] - image_loc.height/2.0,
-                 ]
-        image_loc = image_loc.move(offset)
+        screen_space[0] -= image_loc.width/2.0
+        screen_space[1] -= image_loc.height/2.0
+        new_img_loc = image_loc.move(screen_space)
         # Maybe add guards to check if image is outisde the window?
-        window.blit(transform, image_loc)
+        window.blit(transform, new_img_loc)
 
-    def draw2(self, window, cam, offset):
-        """ Given a window to draw on, this method internally rotates, scales and
-            moves the Entity's image field, then paints it onto the window. 
-            Entity's image is scaled such that it's width is equal to the Entity's
-            radius. 
-        """
-        image_loc = self.image.get_rect().width
-        s = self.radius / self.image.get_rect().width
-        # Re-Transform the image for each frame
-        transform = pygame.transform.rotozoom(self.image,
-                                              degrees(-self.rotation) - 90,
-                                              s * cam.get_zoom())
-        image_loc = transform.get_rect()
-        # Offset the image so that it is centered at the objects location
-        offset = [
-                  self.loc[0] - image_loc.width/2.0,
-                  self.loc[1] - image_loc.height/2.0,
-                 ]
-        image_loc = image_loc.move(offset)
-        # Maybe add guards to check if image is outisde the window?
-        window.blit(transform, image_loc)
-
-class Enemy(Entity):
+class Agent(Entity):
     """ Extension of the Entity class. Used as the basic agents of the game.
     """
-    def __init__(self, loc, vel, radius, rotation, booster_speed, health, img):
-        Entity.__init__(self, loc, vel, radius, rotation, img)
+    def __init__(self, loc, vel, mass, radius, rotation, booster_speed, health, img, proj):
+        Entity.__init__(self, loc, vel, mass, radius, rotation, img)
         self.booster_speed = booster_speed
         self.booster_on = False
+        self.booster_fuel = 100.0
+        self.booster_fuel_max = 100.0
+        self.turn_speed = 0.01
+        self.is_turning_left = False
+        self.is_turning_right = False
         self.is_alive = True
         self.health = health
         self.image_scrap = img  # Seperate image used for explosion()
+        self.image_proj = proj  # seperate image used for shoot()
+
+    def turn(self, dt):
+        if self.is_turning_left == True:
+            self.rotation -= self.turn_speed * dt
+        if self.is_turning_right == True:
+            self.rotation += self.turn_speed * dt
 
     def harm(self, damage):
-        """ Decrement the Enemy's health.
+        """ Decrement the Agent's health.
         """
         self.health -= damage
         if self.health <= 0:
             self.is_alive = False
+            print("Damaged!\t", self.health, "left!")
 
-    def use_booster(self):
-        """ Add the force of the Enemy's booster if it is active.
+    def use_booster(self, dt):
+        """ Add the force of the Agent's booster if it is active.
         """
-        # if self.booster_on:
-        self.force[0] += self.booster_speed * cos(self.rotation)
-        self.force[1] += self.booster_speed * sin(self.rotation)
+        if self.booster_on == True and self.booster_fuel > 0.0:
+            self.force[0] += self.booster_speed * cos(self.rotation) * dt
+            self.force[1] += self.booster_speed * sin(self.rotation) * dt
+            self.booster_fuel -= 0.05 * dt
+            if self.booster_fuel < 0.0:
+                self.booster_fuel = 0.0
+            # print("Fuel:", self.booster_fuel)
 
-    def shoot(self, ent_list, damage, speed):
-        proj = Projectile(self, speed, damage, 10, self.image)
-        ent_list.append(proj)
+    def shoot(self, speed, damage, duration):
+        return Projectile(self, speed, damage, duration)
 
     def stabilize_orbit(self, body, counter_clockwise=True):
         # Get the difference between self's target & current velocities.
@@ -227,47 +249,50 @@ class Enemy(Entity):
         angle = atan2(delta_v[1], delta_v[0]),
         speed = sqrt(delta_v[0] **2 + delta_v[1]),
 
-    def explode(self, body_list):
+    def explode(self):
         self.is_alive = False
         result = []
         n = 7
-        explosion_force = 1.50
+        explosion_force = 0.05
         for b in range(0, n):
             angle = random() * 2.0 * math.pi
             vel_x = self.vel[0] + explosion_force * cos(angle)
             vel_y = self.vel[1] + explosion_force * sin(angle)
+            # Offset sub Entities by their radii
+            loc_x = self.loc[0] + self.radius * cos(angle) * 1.1
+            loc_y = self.loc[1] + self.radius * sin(angle) * 1.1
             result.append(Entity(
-                            [self.loc[0], self.loc[1]],
+                            [loc_x, loc_y],
                             [vel_x, vel_y],
+                            10.0,
                             10.0,
                             0.0,
                             self.image_scrap))
         return result
 
-class Player(Enemy):
-    def __init__(self, weapons):
-        weapons = weapons # Is a list of weapons
-
 class Projectile(Entity):
-    def __init__(self, body, speed, damage, duration, img):
-        self.loc = body.loc
-        self.vel = body.vel
-        self.force = [0.0, 0.0]
-        self.radius = 10.0
-        self.rotation = body.rotation
-        self.image = img
-        self.speed = speed
+    def __init__(self, body, speed, damage, duration):
+        Entity.__init__(self, body.loc.copy(), body.vel.copy(), 0.01, 10.0, body.rotation, body.image_proj)
         self.damage = damage
         self.duration = duration
         # Owner # How would this get implemented?
+        self.loc[0] += (body.radius + self.radius + 10) * cos(self.rotation)
+        self.loc[1] += (body.radius + self.radius + 10) * sin(self.rotation)
         self.vel[0] += speed * cos(self.rotation)
         self.vel[1] += speed * sin(self.rotation)
 
-# class Guided(Projectile):
+    def iterate_location(self, dt):
+        """ Increments the Entity's location by the Entities experienced
+            velocity.
+        """
+        self.loc[0] += self.vel[0] * dt
+        self.loc[1] += self.vel[1] * dt
+
+        self.rotation = atan2(self.vel[1], self.vel[0])
 
 class Star(Entity):
     def __init__(self, loc, vel, radius, mass, img_path):
-        Entity.__init__(self, loc, vel, radius, 0, img_path)
-        self.rotation = -3.14/2.0 # Hack to make sure that Star object's
-        self.mass = 100           # image renders correctly
+        Entity.__init__(self, loc, vel, mass, radius, 0, img_path)
+        self.rotation = -math.pi/2.0 # Hack to make sure that Star object's
+        self.mass = mass           # image renders correctly
 

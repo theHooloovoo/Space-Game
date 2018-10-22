@@ -10,78 +10,56 @@ import sys
 import pygame
 from pygame.locals import *
 
+# Used to write on the screen
+# font = pygame.font.SysFont("monospace", 12)
+
 # Used for object serialization into JSON format
 import pickle
 
 pygame.init()
-window = pygame.display.set_mode([1200, 800])
-cam = Camera(1200, 800)
+window = pygame.display.set_mode([1280, 800])
+cam = Camera()
+cam.move_to([0.0, 0.0])
 
-img = pygame.image.load("img.png")
-# image_rect = image.get_rect()
+img       = pygame.image.load("img.png")
+img_ship0 = pygame.image.load("resource/cursor.png")
+img_ship1 = pygame.image.load("resource/ship1.png")
+img_rock1 = pygame.image.load("resource/asteroid_1.png")
+img_sun   = pygame.image.load("resource/nasa_sun.png")
+img_shot1 = pygame.image.load("resource/projectile1.png")
 
+# player = Player( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img)
 ent_list = []
 star_list = []
 
-ent_list.append(Entity([400.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([450.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([500.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([550.0, 400.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Entity([600.0, 420.0], [0.00,  0.00],  50.0,  0.0, img))
-ent_list.append(Enemy( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img))
+star_list.append(Star( [0.0, 0.0], [0.0, 0.0], 30.0, 400.0, img_sun))
+player = Agent( [300, 0], [0.0, 0.0], 3.0, 20.0, 0.0, 0.02, 100, img_ship1, img_shot1)
+player.vel = player.get_orbital_velocity(star_list[0])
 
-star_list.append(Star( [600.0, 400.0], [0.0, 0.0], 100.0, 100000000000000.0, img))
-# star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
+lvl1 = Level(player, ent_list, [], star_list)
 
-for e in ent_list:
-    v = e.get_orbital_velocity(star_list[0])
-    e.vel = v
+#                   Location      Velocity        Mass  Radius Rotation 
+lvl1.add_ent(Entity([-100,  100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([100,  -100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([100,   100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([-100, -100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([200,  -200], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([125,   125], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([125,  -125], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([-125,  125], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([-125, -125], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([150,     0], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Entity([-150,    0], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
+lvl1.add_ent(Agent( [-300,  0.0], [1.00,  1.00],   1.0, 12.0,  0.0, 0.1, 2, img_ship0, img_shot1))
 
-delta_time = 1.0
+# lvl1.add_ent(Star( [-700.0, 0.0], [0.0, 0.0], 10.0, 50.0, img_sun))
 
-while 1:
+for e in lvl1.entity_list:
+    e.vel = e.get_orbital_velocity(lvl1.star_list[0])
+for e in lvl1.agent_list:
+    e.vel = e.get_orbital_velocity(lvl1.star_list[0])
 
-    # Quit when the window gets closed
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            sys.exit()
-        if event.type is KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                ent_list[5].use_booster()
-                print("BOOSTING!")
-            if event.key == pygame.K_a:
-                cam.zoom_in(0.1)
-            if event.key == pygame.K_KP_PLUS:
-                cam.zoom_in(-0.1)
-
-    # Physics Loop ====================
-    for e in ent_list:
-        e.iterate_force(star_list)
-
-    for e in ent_list:
-        e.iterate_velocity(delta_time)
-
-    for e in ent_list:
-        e.iterate_location(delta_time)
-        e.clear_force()
-        # e.look_at(star_list[0])
-        if type(e) == Enemy:
-            e.point_to(pygame.mouse.get_pos())
-
-    # Paint ===========================
-    window.fill([0,0,0])
-    for s in star_list:
-        s.draw(window, cam, [0,0])
-    for e in ent_list:
-        e.draw(window, cam, [0,0])
-
-    pygame.display.flip()
-
-    pressed_names = []
-    if len(pressed_names) != 0:
-        print(pressed_names)
-
-push(GameState())
+push(GameState(lvl1))
 while (size() > 0):
 	top().run(window)
   
