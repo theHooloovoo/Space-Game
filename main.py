@@ -47,12 +47,10 @@ lvl1.add_ent(Agent( [-200, -200], [1.00, 1.00], 1.0, 12.0, 0.0, 0.1, 2, img_ship
 
 # star_list.append(Star( [1000.0, 700.0], [0.0, 0.0], 100.0, 1000.0, img))
 
-"""
 for e in lvl1.entity_list:
     e.vel = e.get_orbital_velocity(lvl1.star_list[0])
 for e in lvl1.agent_list:
     e.vel = e.get_orbital_velocity(lvl1.star_list[0])
-"""
 
 push(GameState(lvl1))
 while (size() > 0):
