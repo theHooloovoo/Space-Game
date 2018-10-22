@@ -68,6 +68,7 @@ class MenuState(State):
 class GameState(State):
 	""" The controller for the game """
 	def __init__(self, lvl):
+		self.frame_count = 0
 		self.level = lvl
 		self.delta_time = 1.0
 		self.timer = pygame.time.Clock()
@@ -80,6 +81,7 @@ class GameState(State):
 		pass
 
 	def run(self, window):
+		self.frame_count += 1
 		dt = self.timer.tick()
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -88,14 +90,30 @@ class GameState(State):
 				pop()
 				break
 			if event.type is KEYDOWN:
-				if event.key == pygame.K_SPACE:
-					self.level.player.use_booster()
+				if event.key == pygame.K_w:
+					self.level.player.booster_on = True
+					print("Booster On.")
+				if event.key == pygame.K_a:
+					self.level.player.is_turning_left = True
+				if event.key == pygame.K_d:
+					self.level.player.is_turning_right = True
+			if event.type is KEYUP:
+				if event.key == pygame.K_w:
+					self.level.player.booster_on = False
+				if event.key == pygame.K_a:
+					self.level.player.is_turning_left = False
+				if event.key == pygame.K_d:
+					self.level.player.is_turning_right = False
 
 		# Physics
 		self.level.step_physics(dt * 0.07)
+		# Game Logic
+		self.level.step_game_logic(dt)
 		# Paint
 		self.level.draw_all(window)
-
+		# Quit if player dies
+		if self.level.player.is_active == False:
+			pop()
 
 # Current states of the program
 states = []

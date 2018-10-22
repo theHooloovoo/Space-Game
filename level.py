@@ -58,12 +58,6 @@ class Camera:
         dif_loc[0] += self.loc[0]
         dif_loc[1] += self.loc[1]
         return dif_loc
-        """
-        return [
-                -window.get_width()/2  / self.zoom + loc[0] - self.loc[0],
-                -window.get_height()/2 / self.zoom + loc[1] - self.loc[1],
-               ]
-        """
 
 class Level:
     def __init__(self, player, ents, agents, stars):
@@ -76,6 +70,85 @@ class Level:
         self.agent_list = agents
         self.projectile_list = []
         # self.background = ""
+
+    def collision_check(self, dt):
+        # Check against Stars
+        for sun in self.star_list:
+            for ent in self.entity_list:
+                if sun.is_touching(ent):
+                    ent.is_active = False
+                    print("Touched the sun!")
+            for proj in self.projectile_list:
+                if sun.is_touching(proj):
+                    ent.is_active = False
+                    print("Touched the sun!")
+            for agent in self.agent_list:
+                if sun.is_touching(agent):
+                    agent.is_active = False
+                    print("Touched the sun!")
+            if sun.is_touching(self.player):
+                self.player.is_active = False
+                print("Collision with Player detected.")
+        # Check Entities
+        for ent in self.entity_list:
+            for ent2 in self.entity_list:
+                if (ent != ent2) and (ent.is_touching(ent2)):
+                    ent.resolve_collisions(ent2)
+            for agent in self.agent_list:
+                if (ent != agent) and (ent.is_touching(agent)):
+                    ent.resolve_collisions(agent)
+            for proj in self.projectile_list:
+                if (ent != proj) and (ent.is_touching(proj)):
+                    ent.resolve_collisions(proj)
+        # Check Agents
+        for ent in self.agent_list:
+            for agent in self.agent_list:
+                if (ent != agent) and (ent.is_touching(agent)):
+                    ent.resolve_collisions(agent)
+                    ent.harm(0.1 * dt)
+            for proj in self.projectile_list:
+                if (ent != proj) and (ent.is_touching(proj)):
+                    ent.resolve_collisions(proj)
+                    ent.harm(proj.damage)
+        # Check Projectiles
+        for ent in self.entity_list:
+            for proj in self.projectile_list:
+                if (ent != proj) and (ent.is_touching(proj)):
+                    ent.resolve_collisions(proj)
+        # Check Player
+        for ent in self.entity_list:
+            if self.player.is_touching(ent):
+                self.player.resolve_collisions(ent)
+                self.player.harm(0.1 * dt)
+        for agent in self.agent_list:
+            if self.player.is_touching(agent):
+                self.player.resolve_collisions(agent)
+                self.player.harm(0.1 * dt)
+                agent.harm(0.1 * dt)
+        for proj in self.projectile_list:
+            if self.player.is_touching(proj):
+                self.player.resolve_collisions(proj)
+                self.player.harm(proj.damage)
+    
+    def cull_ents(self):
+        self.entity_list     = [n for n in self.entity_list if n.is_active == True]
+        self.agent_list      = [n for n in self.agent_list if n.is_active == True]
+        self.projectile_list = [n for n in self.projectile_list if n.is_active == True]
+        """
+        for n in range(0, len(self.entity_list), -1):
+            if self.entity_list[n].is_active == False:
+                print("Culled Ent")
+                self.entity_list.remove(self.entity_list[n])
+        for n in range(0, len(self.agent_list), -1):
+            if self.agent_list[n].is_active == False:
+                print("Culled Agent")
+                self.agent_list.remove(self.agent_list[n])
+        for n in range(0, len(self.projectile_list), -1):
+            if self.projectile_list[n].is_active == False:
+                print("Culled Projectile")
+                self.projectile_list.remove(self.projectile_list[n])
+        """
+
 
     def add_ent(self, ent):
         """ Adds the given Entity to one of the Level's internal lists of
@@ -92,13 +165,45 @@ class Level:
         else:
             print("Err: Couldn't add object to level!")
 
+    def step_game_logic(self, dt):
+        self.collision_check(dt)
+        self.cull_ents()
+        # This part is for testing!
+        for ent in self.agent_list:
+            ent.look_at(self.player)
+            ent.use_booster(dt)
+        # Player logic
+        if self.player.health <= 0.0:
+            self.add_ent(self.player.explode())
+        self.player.use_booster(dt)
+        self.player.turn(dt)
+        self.player.booster_fuel += 0.03 * dt
+        if self.player.booster_fuel > self.player.booster_fuel_max:
+            self.player.booster_fuel = self.player.booster_fuel_max
+        # Enemy Logic
+        for agent in self.agent_list:
+            if agent.health <= 0.0:
+                for n in agent.explode():
+                    self.add_ent(n)
+                print("exploded")
+        for n in range(0,len(self.agent_list),-1):
+            if self.agent_list[n].is_alive == False:
+                self.agent_list.remove(self.agent_list[n])
+        # Move camera
+        cam_loc = [0.0, 0.0]
+        cam_loc[0] = self.player.loc[0] * 0.5
+        cam_loc[1] = self.player.loc[1] * 0.5
+        self.cam.loc = cam_loc
+
+        # print("Player Health:", self.player.health, "\tEnemy Health:", self.agent_list[0].health)
+
     def step_physics(self, dt):
-        """ Iterate the physics for all of the Entity's in then level. This
-            is a simple leap frog iterator. Pretty much to calculate the new
-            location for each object, we need find the integral of it, and
-            then the integral of that. This essentially boils down to finding
-            the force applied to each object, increment the velocity by that,
-            then increment the location by that.
+        """ Iterate the physics for all of the Entity's in the level. This
+            is a simple leap frog iterator. Pretty much, to calculate the new
+            location for each object, we need find the net force applied on
+            the object by all of the stars, then add that to the velocity
+            (accounting for the time step 'dt'). Then update the location by
+            the velocity (again, accounting for 'dt').
         """
         # Force
         self.player.iterate_force(self.star_list)
