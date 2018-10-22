@@ -13,7 +13,10 @@ class Entity:
         Contains all of the basic methods needed to be displayed on screen,
         as well as all of the basic physics methods to drive movement.
     """
+    # Internal Gravitaional Constant
     GRAV = 12.00
+    # Entities further from the origin than this will drug back towards the system
+    DAMP_DIST = 1000.0
     def __init__(self, loc, vel, mass, radius, rotation, img):
         """ loc & vel are both [float; 2].
             radius & rotation are both float
@@ -127,6 +130,12 @@ class Entity:
                 star_force[1] += magnitude * sin(radians)
         self.force[0] += star_force[0]
         self.force[1] += star_force[1]
+        # Stop objects from escaping system
+        d = sqrt(self.loc[0]**2 + self.loc[1]**2)
+        if d >= Entity.DAMP_DIST:
+            angle = atan2(self.loc[1], self.loc[0])
+            self.force[0] -= 0.2 * cos(angle)
+            self.force[1] -= 0.2 * sin(angle)
 
     def get_orbital_velocity(self, body, counter_clockwise=True):
         """ Calculates the velocity needed to orbit the given body with an 
@@ -188,7 +197,7 @@ class Entity:
 class Agent(Entity):
     """ Extension of the Entity class. Used as the basic agents of the game.
     """
-    def __init__(self, loc, vel, mass, radius, rotation, booster_speed, health, img):
+    def __init__(self, loc, vel, mass, radius, rotation, booster_speed, health, img, proj):
         Entity.__init__(self, loc, vel, mass, radius, rotation, img)
         self.booster_speed = booster_speed
         self.booster_on = False
@@ -200,6 +209,7 @@ class Agent(Entity):
         self.is_alive = True
         self.health = health
         self.image_scrap = img  # Seperate image used for explosion()
+        self.image_proj = proj  # seperate image used for shoot()
 
     def turn(self, dt):
         if self.is_turning_left == True:
@@ -213,6 +223,7 @@ class Agent(Entity):
         self.health -= damage
         if self.health <= 0:
             self.is_alive = False
+            print("Damaged!\t", self.health, "left!")
 
     def use_booster(self, dt):
         """ Add the force of the Agent's booster if it is active.
@@ -223,11 +234,10 @@ class Agent(Entity):
             self.booster_fuel -= 0.05 * dt
             if self.booster_fuel < 0.0:
                 self.booster_fuel = 0.0
-            print("Fuel:", self.booster_fuel)
+            # print("Fuel:", self.booster_fuel)
 
-    def shoot(self, ent_list, damage, speed):
-        proj = Projectile(self, speed, damage, 10, self.image)
-        ent_list.append(proj)
+    def shoot(self, speed, damage, duration):
+        return Projectile(self, speed, damage, duration)
 
     def stabilize_orbit(self, body, counter_clockwise=True):
         # Get the difference between self's target & current velocities.
@@ -242,14 +252,15 @@ class Agent(Entity):
     def explode(self):
         self.is_alive = False
         result = []
-        n = 5
-        explosion_force = 1.20
+        n = 7
+        explosion_force = 0.05
         for b in range(0, n):
             angle = random() * 2.0 * math.pi
             vel_x = self.vel[0] + explosion_force * cos(angle)
             vel_y = self.vel[1] + explosion_force * sin(angle)
-            loc_x = self.loc[0] + explosion_force * cos(angle) * 0.1
-            loc_y = self.loc[1] + explosion_force * sin(angle) * 0.1
+            # Offset sub Entities by their radii
+            loc_x = self.loc[0] + self.radius * cos(angle) * 1.1
+            loc_y = self.loc[1] + self.radius * sin(angle) * 1.1
             result.append(Entity(
                             [loc_x, loc_y],
                             [vel_x, vel_y],
@@ -260,25 +271,28 @@ class Agent(Entity):
         return result
 
 class Projectile(Entity):
-    def __init__(self, body, speed, damage, duration, img):
-        self.loc = body.loc
-        self.vel = body.vel
-        self.force = [0.0, 0.0]
-        self.radius = 10.0
-        self.rotation = body.rotation
-        self.image = img
-        self.speed = speed
+    def __init__(self, body, speed, damage, duration):
+        Entity.__init__(self, body.loc.copy(), body.vel.copy(), 0.01, 10.0, body.rotation, body.image_proj)
         self.damage = damage
         self.duration = duration
         # Owner # How would this get implemented?
+        self.loc[0] += (body.radius + self.radius + 10) * cos(self.rotation)
+        self.loc[1] += (body.radius + self.radius + 10) * sin(self.rotation)
         self.vel[0] += speed * cos(self.rotation)
         self.vel[1] += speed * sin(self.rotation)
 
-# class Guided(Projectile):
+    def iterate_location(self, dt):
+        """ Increments the Entity's location by the Entities experienced
+            velocity.
+        """
+        self.loc[0] += self.vel[0] * dt
+        self.loc[1] += self.vel[1] * dt
+
+        self.rotation = atan2(self.vel[1], self.vel[0])
 
 class Star(Entity):
     def __init__(self, loc, vel, radius, mass, img_path):
         Entity.__init__(self, loc, vel, mass, radius, 0, img_path)
-        self.rotation = -3.14/2.0 # Hack to make sure that Star object's
+        self.rotation = -math.pi/2.0 # Hack to make sure that Star object's
         self.mass = mass           # image renders correctly
 

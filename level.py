@@ -77,28 +77,28 @@ class Level:
             for ent in self.entity_list:
                 if sun.is_touching(ent):
                     ent.is_active = False
-                    print("Touched the sun!")
+                    # print("Touched the sun!")
             for proj in self.projectile_list:
                 if sun.is_touching(proj):
-                    ent.is_active = False
-                    print("Touched the sun!")
+                    proj.is_active = False
+                    # print("Touched the sun!")
             for agent in self.agent_list:
                 if sun.is_touching(agent):
                     agent.is_active = False
-                    print("Touched the sun!")
+                    # print("Touched the sun!")
             if sun.is_touching(self.player):
                 self.player.is_active = False
-                print("Collision with Player detected.")
+                # print("Collision with Player detected.")
         # Check Entities
         for ent in self.entity_list:
             for ent2 in self.entity_list:
                 if (ent != ent2) and (ent.is_touching(ent2)):
                     ent.resolve_collisions(ent2)
             for agent in self.agent_list:
-                if (ent != agent) and (ent.is_touching(agent)):
+                if (ent.is_touching(agent)):
                     ent.resolve_collisions(agent)
             for proj in self.projectile_list:
-                if (ent != proj) and (ent.is_touching(proj)):
+                if (ent.is_touching(proj)):
                     ent.resolve_collisions(proj)
         # Check Agents
         for ent in self.agent_list:
@@ -110,11 +110,13 @@ class Level:
                 if (ent != proj) and (ent.is_touching(proj)):
                     ent.resolve_collisions(proj)
                     ent.harm(proj.damage)
+                    proj.is_active = False
         # Check Projectiles
-        for ent in self.entity_list:
+        for ent in self.projectile_list:
             for proj in self.projectile_list:
                 if (ent != proj) and (ent.is_touching(proj)):
                     ent.resolve_collisions(proj)
+                    ent.is_active = False
         # Check Player
         for ent in self.entity_list:
             if self.player.is_touching(ent):
@@ -127,16 +129,24 @@ class Level:
                 agent.harm(0.1 * dt)
         for proj in self.projectile_list:
             if self.player.is_touching(proj):
-                self.player.resolve_collisions(proj)
+                # self.player.resolve_collisions(proj)
                 self.player.harm(proj.damage)
+                proj.is_active = False
     
-    def cull_ents(self):
+    def cull_ents(self, dt):
+        # Remove an entity if they are not active.
+        # Easy way of destructively mutating a list
         self.entity_list     = [n for n in self.entity_list
                                 if n.is_active == True]
         self.agent_list      = [n for n in self.agent_list
                                 if n.is_active == True]
         self.projectile_list = [n for n in self.projectile_list
                                 if n.is_active == True]
+        # Tick each of the projectile durations
+        for proj in self.projectile_list:
+            proj.duration -= 0.01 * dt
+        self.projectile_list = [n for n in self.projectile_list
+                                if n.duration > 0.0]
 
     def add_ent(self, ent):
         """ Adds the given Entity to one of the Level's internal lists of
@@ -155,7 +165,7 @@ class Level:
 
     def step_game_logic(self, dt):
         self.collision_check(dt)
-        self.cull_ents()
+        self.cull_ents(dt)
         # This part is for testing!
         for ent in self.agent_list:
             ent.look_at(self.player)
@@ -170,20 +180,19 @@ class Level:
             self.player.booster_fuel = self.player.booster_fuel_max
         # Enemy Logic
         for agent in self.agent_list:
-            if agent.health <= 0.0:
+            if agent.health <= 0.0 and agent.is_active == True:
                 for n in agent.explode():
                     self.add_ent(n)
-                print("exploded")
+                # Make sure the agent doesn't re-explode!
+                agent.is_active = False
+                # print("exploded")
         for n in range(0,len(self.agent_list),-1):
             if self.agent_list[n].is_alive == False:
                 self.agent_list.remove(self.agent_list[n])
         # Move camera
-        cam_loc = [0.0, 0.0]
-        cam_loc[0] = self.player.loc[0] * 0.5
-        cam_loc[1] = self.player.loc[1] * 0.5
-        self.cam.loc = cam_loc
-
-        # print("Player Health:", self.player.health, "\tEnemy Health:", self.agent_list[0].health)
+        d_sqrd = self.player.loc[0]**2 + self.player.loc[1]**2
+        mod = 1- (1 / (1 + (0.00001 * d_sqrd))) # Fancy math
+        self.cam.loc = [self.player.loc[0]*mod, self.player.loc[1]*mod]
 
     def step_physics(self, dt):
         """ Iterate the physics for all of the Entity's in the level. This

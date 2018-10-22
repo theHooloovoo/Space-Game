@@ -92,11 +92,14 @@ class GameState(State):
 			if event.type is KEYDOWN:
 				if event.key == pygame.K_w:
 					self.level.player.booster_on = True
-					print("Booster On.")
+					# print("Booster On.")
 				if event.key == pygame.K_a:
 					self.level.player.is_turning_left = True
 				if event.key == pygame.K_d:
 					self.level.player.is_turning_right = True
+				if event.key == pygame.K_SPACE:
+					self.level.projectile_list.append(self.level.player.shoot(5.0, 30.0, 10.0))
+					# print(type(self.level.player.shoot(5.0, 30.0, 10.0)))
 			if event.type is KEYUP:
 				if event.key == pygame.K_w:
 					self.level.player.booster_on = False
@@ -104,7 +107,6 @@ class GameState(State):
 					self.level.player.is_turning_left = False
 				if event.key == pygame.K_d:
 					self.level.player.is_turning_right = False
-
 		# Physics
 		self.level.step_physics(dt * 0.07)
 		# Game Logic
