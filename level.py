@@ -131,24 +131,12 @@ class Level:
                 self.player.harm(proj.damage)
     
     def cull_ents(self):
-        self.entity_list     = [n for n in self.entity_list if n.is_active == True]
-        self.agent_list      = [n for n in self.agent_list if n.is_active == True]
-        self.projectile_list = [n for n in self.projectile_list if n.is_active == True]
-        """
-        for n in range(0, len(self.entity_list), -1):
-            if self.entity_list[n].is_active == False:
-                print("Culled Ent")
-                self.entity_list.remove(self.entity_list[n])
-        for n in range(0, len(self.agent_list), -1):
-            if self.agent_list[n].is_active == False:
-                print("Culled Agent")
-                self.agent_list.remove(self.agent_list[n])
-        for n in range(0, len(self.projectile_list), -1):
-            if self.projectile_list[n].is_active == False:
-                print("Culled Projectile")
-                self.projectile_list.remove(self.projectile_list[n])
-        """
-
+        self.entity_list     = [n for n in self.entity_list
+                                if n.is_active == True]
+        self.agent_list      = [n for n in self.agent_list
+                                if n.is_active == True]
+        self.projectile_list = [n for n in self.projectile_list
+                                if n.is_active == True]
 
     def add_ent(self, ent):
         """ Adds the given Entity to one of the Level's internal lists of
