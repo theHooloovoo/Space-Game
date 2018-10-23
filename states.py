@@ -2,6 +2,7 @@
 
 from entity import Entity, Agent, Projectile, Star
 from level import Level
+from gui import Button
 
 import sys
 import pygame
@@ -43,10 +44,10 @@ class PauseState(State):
 class MenuState(State):
 	""" The controller for the main menu """
 	def __init__(self, lvl):
-		self.background = pygame.image.load("resource/menu_backdrop.png")
-		self.buttons = [Button(pygame.image.load("resource/new_button.png"),
+		self.background = pygame.image.load("resource/menu_backdrop.jpg")
+		self.buttons = [Button(pygame.image.load("resource/play_button.png"),
             [475, 300, 250, 75], lambda : push(GameState(lvl))),
-            Button(pygame.image.load("resource/load_button.png"),
+            Button(pygame.image.load("resource/option_button.png"),
             [475, 400, 250, 75], lambda : push(0)),
             Button(pygame.image.load("resource/exit_button.png"),
             [475, 500, 250, 75], lambda : pop())]

@@ -19,7 +19,8 @@ class Button:
 		self.rect = rect
 		self.action = action
 
-	def highlight(b):
+	def highlight(self, b):
+		""" Highlights the button by increasing the alpha """
 		if (b):
 			self.image.set_alpha(BTN_HIGHLIGHT)
 		else:
@@ -33,3 +34,6 @@ class Button:
 	def click(self):
 		""" Invokes the button's action. """
 		self.action()
+
+	def draw(self, window):
+		window.blit(self.image, self.rect[:2])
