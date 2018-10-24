@@ -29,28 +29,71 @@ class State:
 
 class PauseState(State):
 	""" The controller for the pause menu """
-	def __init__(self):
-		pass
+	def __init__(self, bg_entities, cam):
+		self.font = pygame.font.Font("resource/courbd.ttf", 40)
+		self.camera = cam
+		self.bg_entities = bg_entities
+		self.background = pygame.image.load("resource/pause_menu.png")
+		self.menu_location = [465, 150]
+		self.index = 0
+		self.buttons = [Button(pygame.image.load("resource/return_button.png"),
+			[515, 320, 250, 75], lambda : pop()),
+			Button(pygame.image.load("resource/option_button.png"),
+			[515, 430, 250, 75], lambda : push(0)),
+			Button(pygame.image.load("resource/exit_button.png"),
+			[515, 540, 250, 75], lambda : sys.exit())]
 
 	def activate(self):
-		pass
+		self.index = 0
+		self.buttons[self.index].highlight(True)
 
 	def deactivate(self):
 		pass
 
 	def run(self, window):
-		pass
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				sys.exit()
+			elif (event.type == pygame.KEYUP):
+				if (event.key == pygame.K_ESCAPE):
+					pop()
+				elif (event.key == pygame.K_w or event.key == pygame.K_UP):
+					if (self.index >= 1):
+						self.buttons[self.index].highlight(False)
+						self.index -= 1
+						self.buttons[self.index].highlight(True)
+				elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
+					if (self.index < len(self.buttons) - 1):
+						self.buttons[self.index].highlight(False)
+						self.index += 1
+						self.buttons[self.index].highlight(True)
+				elif (event.key == pygame.K_RETURN):
+					self.buttons[self.index].click()
+		window.fill([0,0,0])
+		for ent in self.bg_entities:
+			ent.draw(window, self.camera)
+		window.blit(self.background, self.menu_location)
+
+		pos = self.font.size("Paused")
+		pos = [self.menu_location[0] + 175 - (pos[0] / 2),
+			self.menu_location[1] + 85 - (pos[1] / 2)]
+		window.blit(self.font.render("Paused", True, [38, 38, 38]), pos)
+
+		for btn in self.buttons:
+			btn.draw(window)
+		pygame.display.flip()
 
 class MenuState(State):
 	""" The controller for the main menu """
 	def __init__(self, lvl):
+		self.font = pygame.font.Font("resource/courbd.ttf", 60)
 		self.background = pygame.image.load("resource/menu_backdrop.jpg")
 		self.buttons = [Button(pygame.image.load("resource/play_button.png"),
-            [475, 300, 250, 75], lambda : push(GameState(lvl))),
+            [515, 300, 250, 75], lambda : push(GameState(lvl))),
             Button(pygame.image.load("resource/option_button.png"),
-            [475, 400, 250, 75], lambda : push(0)),
+            [515, 400, 250, 75], lambda : push(0)),
             Button(pygame.image.load("resource/exit_button.png"),
-            [475, 500, 250, 75], lambda : pop())]
+            [515, 500, 250, 75], lambda : pop())]
 
 	def activate(self):
 		self.index = 0
@@ -62,7 +105,9 @@ class MenuState(State):
 	def run(self, window):
 		""" Monitors user input for menu selections """
 		for event in pygame.event.get():
-			if (event.type == pygame.KEYUP):
+			if event.type == pygame.QUIT:
+				sys.exit()
+			elif (event.type == pygame.KEYUP):
 				if (event.key == pygame.K_ESCAPE):
 					pop()
 				elif (event.key == pygame.K_w or event.key == pygame.K_UP):
@@ -79,6 +124,12 @@ class MenuState(State):
 					self.buttons[self.index].click()
 		window.fill([0,0,0])
 		window.blit(self.background, [0,0])
+
+		pos = self.font.size("Space Game")
+		pos = [window.get_width() / 2 - (pos[0] / 2),
+			window.get_height() / 4 - (pos[1] / 2)]
+		window.blit(self.font.render("Space Game", True, [150, 150, 150]), pos)
+
 		for btn in self.buttons:
 			btn.draw(window)
 
@@ -94,6 +145,7 @@ class GameState(State):
 		self.elapsed_time = self.timer.tick()
 
 	def activate(self):
+		self.timer = pygame.time.Clock()
 		pass
 
 	def deactivate(self):
@@ -106,7 +158,8 @@ class GameState(State):
 			if event.type == pygame.QUIT:
 				sys.exit()
 			if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
-				pop()
+				ents = self.level.entity_list + self.level.star_list + self.level.agent_list
+				push(PauseState(ents, self.level.cam))
 				break
 			if event.type is KEYDOWN:
 				if event.key == pygame.K_w:

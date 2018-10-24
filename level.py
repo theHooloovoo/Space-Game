@@ -132,7 +132,7 @@ class Level:
                 # self.player.resolve_collisions(proj)
                 self.player.harm(proj.damage)
                 proj.is_active = False
-    
+
     def cull_ents(self, dt):
         # Remove an entity if they are not active.
         # Easy way of destructively mutating a list
@@ -253,5 +253,3 @@ class Level:
         # The currently drawn image was the back-buffer.
         # So now we need to swap buffers so the image displays.
         pygame.display.flip()
-
-
