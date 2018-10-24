@@ -43,7 +43,8 @@ class PauseState(State):
 			[475, 540, 250, 75], lambda : sys.exit())]
 
 	def activate(self):
-		pass
+		self.index = 0
+		self.buttons[self.index].highlight(True)
 
 	def deactivate(self):
 		pass
@@ -127,6 +128,7 @@ class GameState(State):
 		self.elapsed_time = self.timer.tick()
 
 	def activate(self):
+		self.timer = pygame.time.Clock()
 		pass
 
 	def deactivate(self):
