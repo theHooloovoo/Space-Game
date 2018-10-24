@@ -29,8 +29,18 @@ class State:
 
 class PauseState(State):
 	""" The controller for the pause menu """
-	def __init__(self):
-		pass
+	def __init__(self, bg_entities, cam):
+		self.camera = cam
+		self.bg_entities = bg_entities
+		self.background = pygame.image.load("resource/pause_menu.png")
+		self.menu_location = [425, 150]
+		self.index = 0
+		self.buttons = [Button(pygame.image.load("resource/return_button.png"),
+			[475, 320, 250, 75], lambda : pop()),
+			Button(pygame.image.load("resource/option_button.png"),
+			[475, 430, 250, 75], lambda : push(0)),
+			Button(pygame.image.load("resource/exit_button.png"),
+			[475, 540, 250, 75], lambda : sys.exit())]
 
 	def activate(self):
 		pass
@@ -39,7 +49,30 @@ class PauseState(State):
 		pass
 
 	def run(self, window):
-		pass
+		for event in pygame.event.get():
+			if (event.type == pygame.KEYUP):
+				if (event.key == pygame.K_ESCAPE):
+					pop()
+				elif (event.key == pygame.K_w or event.key == pygame.K_UP):
+					if (self.index >= 1):
+						self.buttons[self.index].highlight(False)
+						self.index -= 1
+						self.buttons[self.index].highlight(True)
+				elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
+					if (self.index < len(self.buttons) - 1):
+						self.buttons[self.index].highlight(False)
+						self.index += 1
+						self.buttons[self.index].highlight(True)
+				elif (event.key == pygame.K_RETURN):
+					self.buttons[self.index].click()
+		window.fill([0,0,0])
+		for ent in self.bg_entities:
+			ent.draw(window, self.camera)
+		window.blit(self.background, self.menu_location)
+		for btn in self.buttons:
+			btn.draw(window)
+
+		pygame.display.flip()
 
 class MenuState(State):
 	""" The controller for the main menu """
@@ -106,7 +139,8 @@ class GameState(State):
 			if event.type == pygame.QUIT:
 				sys.exit()
 			if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
-				pop()
+				ents = self.level.entity_list + self.level.star_list + self.level.agent_list
+				push(PauseState(ents, self.level.cam))
 				break
 			if event.type is KEYDOWN:
 				if event.key == pygame.K_w:
