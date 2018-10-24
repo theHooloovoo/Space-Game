@@ -38,7 +38,7 @@ player.vel = player.get_orbital_velocity(star_list[0])
 
 lvl1 = Level(player, ent_list, [], star_list)
 
-#                   Location      Velocity        Mass  Radius Rotation 
+#                   Location      Velocity        Mass  Radius Rotation
 lvl1.add_ent(Entity([-100,  100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
 lvl1.add_ent(Entity([100,  -100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
 lvl1.add_ent(Entity([100,   100], [0.00,  0.00],  10.0, 14.0,  0.0, img_rock1))
@@ -59,7 +59,6 @@ for e in lvl1.entity_list:
 for e in lvl1.agent_list:
     e.vel = e.get_orbital_velocity(lvl1.star_list[0])
 
-push(GameState(lvl1))
+push(MenuState(lvl1))
 while (size() > 0):
 	top().run(window)
-  

@@ -2,6 +2,7 @@
 
 from entity import Entity, Agent, Projectile, Star
 from level import Level
+from gui import Button
 
 import sys
 import pygame
@@ -30,7 +31,7 @@ class PauseState(State):
 	""" The controller for the pause menu """
 	def __init__(self):
 		pass
-	
+
 	def activate(self):
 		pass
 
@@ -42,28 +43,46 @@ class PauseState(State):
 
 class MenuState(State):
 	""" The controller for the main menu """
-	def __init__(self):
-		self.background = pygame.image.load("bgimg.png")
-	
+	def __init__(self, lvl):
+		self.background = pygame.image.load("resource/menu_backdrop.jpg")
+		self.buttons = [Button(pygame.image.load("resource/play_button.png"),
+            [475, 300, 250, 75], lambda : push(GameState(lvl))),
+            Button(pygame.image.load("resource/option_button.png"),
+            [475, 400, 250, 75], lambda : push(0)),
+            Button(pygame.image.load("resource/exit_button.png"),
+            [475, 500, 250, 75], lambda : pop())]
+
 	def activate(self):
-		print("Menu activate")
+		self.index = 0
+		self.buttons[self.index].highlight(True)
 
 	def deactivate(self):
-		print("Menu deactivate")
-	
+		pass
+
 	def run(self, window):
-		""" """
+		""" Monitors user input for menu selections """
 		for event in pygame.event.get():
 			if (event.type == pygame.KEYUP):
 				if (event.key == pygame.K_ESCAPE):
 					pop()
-				elif (event.key == pygame.K_A or event.key == pygame.K_UP):
-					pass # Select up
-				elif (event.key == pygame.K_S or event.key == pygame.K_DOWN):
-					pass # Select down
+				elif (event.key == pygame.K_w or event.key == pygame.K_UP):
+					if (self.index >= 1):
+						self.buttons[self.index].highlight(False)
+						self.index -= 1
+						self.buttons[self.index].highlight(True)
+				elif (event.key == pygame.K_s or event.key == pygame.K_DOWN):
+					if (self.index < len(self.buttons) - 1):
+						self.buttons[self.index].highlight(False)
+						self.index += 1
+						self.buttons[self.index].highlight(True)
 				elif (event.key == pygame.K_RETURN):
-					pass # Load selected state
-		print("Menu run ")
+					self.buttons[self.index].click()
+		window.fill([0,0,0])
+		window.blit(self.background, [0,0])
+		for btn in self.buttons:
+			btn.draw(window)
+
+		pygame.display.flip()
 
 class GameState(State):
 	""" The controller for the game """
@@ -132,7 +151,7 @@ def top():
 def push(state):
 	"""
 		Pushes a new game state to the state stack.
-		
+
 		Arguments:
 		state -- the new state
 	"""
@@ -155,4 +174,3 @@ def pop():
 		if (len(states) > 0):
 			top().activate()
 	return state
-
