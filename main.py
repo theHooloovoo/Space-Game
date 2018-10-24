@@ -17,6 +17,7 @@ from pygame.locals import *
 import pickle
 
 pygame.init()
+pygame.font.init()
 window = pygame.display.set_mode([1280, 800])
 cam = Camera()
 cam.move_to([0.0, 0.0])
