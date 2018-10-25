@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>entity.Agent</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="entity-module.html">Module&nbsp;entity</a> ::
+        Class&nbsp;Agent
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="entity.Agent-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Agent</h1><p class="nomargin-top"><span class="codelink"><a href="entity-pysrc.html#Agent">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_entity_a" name="uml_class_diagram_for_entity_a">
+<area shape="rect" id="node1_24" href="entity.Agent-class.html#__init__" title="loc &amp; vel are both [float; 2]." alt="" coords="17,429,476,449"/>
+<area shape="rect" id="node1_25" href="entity.Agent-class.html#turn" title="entity.Agent.turn" alt="" coords="17,449,476,469"/>
+<area shape="rect" id="node1_26" href="entity.Agent-class.html#harm" title="Decrement the Agent&#39;s health." alt="" coords="17,469,476,489"/>
+<area shape="rect" id="node1_27" href="entity.Agent-class.html#use_booster" title="Add the force of the Agent&#39;s booster if it is active." alt="" coords="17,489,476,509"/>
+<area shape="rect" id="node1_28" href="entity.Agent-class.html#shoot" title="entity.Agent.shoot" alt="" coords="17,509,476,529"/>
+<area shape="rect" id="node1_29" href="entity.Agent-class.html#stabilize_orbit" title="entity.Agent.stabilize_orbit" alt="" coords="17,529,476,549"/>
+<area shape="rect" id="node1_30" href="entity.Agent-class.html#explode" title="entity.Agent.explode" alt="" coords="17,549,476,569"/>
+<area shape="rect" id="node1" href="entity.Agent-class.html" title="Extension of the Entity class." alt="" coords="5,397,488,576"/>
+<area shape="rect" id="node2_31" href="entity.Entity-class.html#GRAV" title="entity.Entity.GRAV" alt="" coords="80,29,413,49"/>
+<area shape="rect" id="node2_32" href="entity.Entity-class.html#DAMP_DIST" title="entity.Entity.DAMP_DIST" alt="" coords="80,49,413,69"/>
+<area shape="rect" id="node2_33" href="entity.Entity-class.html#distance_to" title="Returns the euclidean distance to the given body, as a float." alt="" coords="80,72,413,92"/>
+<area shape="rect" id="node2_34" href="entity.Entity-class.html#distance_to_squared" title="Same as the &#39;distance_to()&#39; method, but doesn&#39;t square root the answer." alt="" coords="80,92,413,112"/>
+<area shape="rect" id="node2_35" href="entity.Entity-class.html#get_location" title="Returns the location of Entity as a [float, float]." alt="" coords="80,112,413,132"/>
+<area shape="rect" id="node2_36" href="entity.Entity-class.html#delta_location" title="Returns the difference in x and y coordinates from the given body, as a &#160;list of floats." alt="" coords="80,132,413,152"/>
+<area shape="rect" id="node2_37" href="entity.Entity-class.html#delta_velocity" title="Returns the difference in velocities between the two bodies." alt="" coords="80,152,413,172"/>
+<area shape="rect" id="node2_38" href="entity.Entity-class.html#is_touching" title="Returns True if self and body are touching." alt="" coords="80,172,413,192"/>
+<area shape="rect" id="node2_39" href="entity.Entity-class.html#resolve_collisions" title="Calculate and apply the force genated from the two bodies colliding." alt="" coords="80,192,413,212"/>
+<area shape="rect" id="node2_40" href="entity.Entity-class.html#iterate_location" title="Increments the Entity&#39;s location by the Entities experienced velocity." alt="" coords="80,212,413,232"/>
+<area shape="rect" id="node2_41" href="entity.Entity-class.html#iterate_velocity" title="Increments the Entity&#39;s velocity by the Entities experienced force." alt="" coords="80,232,413,252"/>
+<area shape="rect" id="node2_42" href="entity.Entity-class.html#clear_force" title="Resets the Entity&#39;s force vector to zero." alt="" coords="80,252,413,272"/>
+<area shape="rect" id="node2_43" href="entity.Entity-class.html#iterate_force" title="Iterates through a list of stars, calculating the gravitaional force from &#160;each." alt="" coords="80,272,413,292"/>
+<area shape="rect" id="node2_44" href="entity.Entity-class.html#get_orbital_velocity" title="Calculates the velocity needed to orbit the given body with an eccentricity close to zero." alt="" coords="80,292,413,312"/>
+<area shape="rect" id="node2_45" href="entity.Entity-class.html#look_at" title="Modifies the Entity&#39;s rotation such that it points towards the given body." alt="" coords="80,312,413,332"/>
+<area shape="rect" id="node2_46" href="entity.Entity-class.html#point_to" title="Takes in a list of two floats, then points the Entity towards that point." alt="" coords="80,332,413,352"/>
+<area shape="rect" id="node2_47" href="entity.Entity-class.html#draw" title="Given a window to draw on, this method internally rotates, scales and moves the Entity&#39;s image field, then paints it onto the window." alt="" coords="80,352,413,372"/>
+<area shape="rect" id="node2" href="entity.Entity-class.html" title="Base Class upon which the rest of the ingame objects are based." alt="" coords="68,5,425,379"/>
+</map>
+  <img src="uml_class_diagram_for_entity_a.gif" alt='' usemap="#uml_class_diagram_for_entity_a" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Extension of the Entity class. Used as the basic agents of the 
+  game.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="entity.Agent-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">loc</span>,
+        <span class="summary-sig-arg">vel</span>,
+        <span class="summary-sig-arg">mass</span>,
+        <span class="summary-sig-arg">radius</span>,
+        <span class="summary-sig-arg">rotation</span>,
+        <span class="summary-sig-arg">booster_speed</span>,
+        <span class="summary-sig-arg">health</span>,
+        <span class="summary-sig-arg">img</span>,
+        <span class="summary-sig-arg">proj</span>)</span><br />
+      loc &amp; vel are both [float; 2].</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="turn"></a><span class="summary-sig-name">turn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dt</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.turn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="harm"></a><span class="summary-sig-name">harm</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">damage</span>)</span><br />
+      Decrement the Agent's health.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.harm">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="use_booster"></a><span class="summary-sig-name">use_booster</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dt</span>)</span><br />
+      Add the force of the Agent's booster if it is active.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.use_booster">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="shoot"></a><span class="summary-sig-name">shoot</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">speed</span>,
+        <span class="summary-sig-arg">damage</span>,
+        <span class="summary-sig-arg">duration</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.shoot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="stabilize_orbit"></a><span class="summary-sig-name">stabilize_orbit</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">body</span>,
+        <span class="summary-sig-arg">counter_clockwise</span>=<span class="summary-sig-default">True</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.stabilize_orbit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="explode"></a><span class="summary-sig-name">explode</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.explode">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="entity.Entity-class.html">Entity</a></code></b>:
+      <code><a href="entity.Entity-class.html#clear_force">clear_force</a></code>,
+      <code><a href="entity.Entity-class.html#delta_location">delta_location</a></code>,
+      <code><a href="entity.Entity-class.html#delta_velocity">delta_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#distance_to">distance_to</a></code>,
+      <code><a href="entity.Entity-class.html#distance_to_squared">distance_to_squared</a></code>,
+      <code><a href="entity.Entity-class.html#draw">draw</a></code>,
+      <code><a href="entity.Entity-class.html#get_location">get_location</a></code>,
+      <code><a href="entity.Entity-class.html#get_orbital_velocity">get_orbital_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#is_touching">is_touching</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_force">iterate_force</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_location">iterate_location</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_velocity">iterate_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#look_at">look_at</a></code>,
+      <code><a href="entity.Entity-class.html#point_to">point_to</a></code>,
+      <code><a href="entity.Entity-class.html#resolve_collisions">resolve_collisions</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="entity.Entity-class.html">Entity</a></code></b>:
+      <code><a href="entity.Entity-class.html#DAMP_DIST">DAMP_DIST</a></code>,
+      <code><a href="entity.Entity-class.html#GRAV">GRAV</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">loc</span>,
+        <span class="sig-arg">vel</span>,
+        <span class="sig-arg">mass</span>,
+        <span class="sig-arg">radius</span>,
+        <span class="sig-arg">rotation</span>,
+        <span class="sig-arg">booster_speed</span>,
+        <span class="sig-arg">health</span>,
+        <span class="sig-arg">img</span>,
+        <span class="sig-arg">proj</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="entity-pysrc.html#Agent.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>loc &amp; vel are both [float; 2]. radius &amp; rotation are both 
+  float img is a pygame.image.Surface</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="entity.Entity-class.html#__init__">Entity.__init__</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Thu Oct 25 04:24:16 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
