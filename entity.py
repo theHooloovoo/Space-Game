@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+""" File for all entities in the game
+
+	This contains all objects that "exist" in the game such as enemies,
+	Stars, and projectiles.
+"""
 
 import math
 from math import atan2, sin, cos, sqrt, degrees
@@ -6,7 +12,6 @@ import random
 from random import random
 
 import pygame
-from pygame.locals import *
 
 class Entity:
     """ Base Class upon which the rest of the ingame objects are based.
@@ -72,12 +77,9 @@ class Entity:
         """ Returns True if self and body are touching. Collision detection
             upon two circles.
         """
-        d = self.distance_to(body)
-        if d <= self.radius + body.radius:
-            return True
-        else:
-            return False
-    
+        dist = self.distance_to(body)
+        return dist <= self.radius + body.radius
+
     def resolve_collisions(self, body):
         """ Calculate and apply the force genated from the two bodies
             colliding.
@@ -121,40 +123,40 @@ class Entity:
         """
         star_force = [0.0, 0.0] # Reset the entities force value
         for body in star_list:
-            d = self.distance_to_squared(body)
-            if d != 0:  # Avoid division by zero!!
+            dist = self.distance_to_squared(body)
+            if dist != 0:  # Avoid division by zero!!
                 r = self.delta_location(body)
                 radians = atan2(r[1], r[0])   # Direction
-                magnitude = Entity.GRAV * body.mass / d    # Magnitude
+                magnitude = Entity.GRAV * body.mass / dist    # Magnitude
                 star_force[0] += magnitude * cos(radians)
                 star_force[1] += magnitude * sin(radians)
         self.force[0] += star_force[0]
         self.force[1] += star_force[1]
         # Stop objects from escaping system
-        d = sqrt(self.loc[0]**2 + self.loc[1]**2)
-        if d >= Entity.DAMP_DIST:
+        dist = sqrt(self.loc[0]**2 + self.loc[1]**2)
+        if dist >= Entity.DAMP_DIST:
             angle = atan2(self.loc[1], self.loc[0])
             self.force[0] -= 0.2 * cos(angle)
             self.force[1] -= 0.2 * sin(angle)
 
     def get_orbital_velocity(self, body, counter_clockwise=True):
-        """ Calculates the velocity needed to orbit the given body with an 
+        """ Calculates the velocity needed to orbit the given body with an
             eccentricity close to zero. counter_clockwise is used to set the
             orbital direction.
         """
         # Angular offset, the velocity needs to be tangental to the
         # direction of the attracting body
         offset = 3.14 / 2.0
-        if counter_clockwise == False:
+        if counter_clockwise:
             offset = -3.14 / 2.0
         delta = self.delta_location(body)
         # Construct velocity vector
         # Magnitude = Equation for mean orbital speed
-        speed = sqrt( (Entity.GRAV * body.mass) / self.distance_to(body) )
+        speed = sqrt((Entity.GRAV * body.mass) / self.distance_to(body))
         angle = atan2(delta[1], delta[0]) + offset # angular offset
         return [
-                speed * cos(angle),
-                speed * sin(angle),
+            speed * cos(angle),
+            speed * sin(angle)
                ]
 
     def look_at(self, body):
@@ -173,9 +175,9 @@ class Entity:
 
     def draw(self, window, cam):
         """ Given a window to draw on, this method internally rotates, scales and
-            moves the Entity's image field, then paints it onto the window. 
+            moves the Entity's image field, then paints it onto the window.
             Entity's image is scaled such that it's width is equal to the Entity's
-            radius. 
+            radius.
         """
         # Get the screen-space for the Entity
         screen_space = cam.get_screen_space(window, self.loc)
@@ -212,9 +214,10 @@ class Agent(Entity):
         self.image_proj = proj  # seperate image used for shoot()
 
     def turn(self, dt):
-        if self.is_turning_left == True:
+        """ Rotates the entity """
+        if self.is_turning_left:
             self.rotation -= self.turn_speed * dt
-        if self.is_turning_right == True:
+        if self.is_turning_right:
             self.rotation += self.turn_speed * dt
 
     def harm(self, damage):
@@ -228,7 +231,7 @@ class Agent(Entity):
     def use_booster(self, dt):
         """ Add the force of the Agent's booster if it is active.
         """
-        if self.booster_on == True and self.booster_fuel > 0.0:
+        if self.booster_on and self.booster_fuel > 0.0:
             self.force[0] += self.booster_speed * cos(self.rotation) * dt
             self.force[1] += self.booster_speed * sin(self.rotation) * dt
             self.booster_fuel -= 0.05 * dt
@@ -237,19 +240,22 @@ class Agent(Entity):
             # print("Fuel:", self.booster_fuel)
 
     def shoot(self, speed, damage, duration):
+        """ Fires a projectile """
         return Projectile(self, speed, damage, duration)
 
     def stabilize_orbit(self, body, counter_clockwise=True):
+        """ Stabilizes orbit by targeting a velocity """
         # Get the difference between self's target & current velocities.
         targ_vel = self.get_orbital_velocity(body, True)
         delta_v = [ # (x,y) components
-                   targ_vel[0] - self.vel[0],
-                   targ_vel[1] - self.vel[1],
+            targ_vel[0] - self.vel[0],
+            targ_vel[1] - self.vel[1]
                   ]
-        angle = atan2(delta_v[1], delta_v[0]),
-        speed = sqrt(delta_v[0] **2 + delta_v[1]),
+        angle = atan2(delta_v[1], delta_v[0])
+        speed = sqrt(delta_v[0] **2 + delta_v[1])
 
     def explode(self):
+        """ Explode an entity """
         self.is_alive = False
         result = []
         n = 7
@@ -262,17 +268,19 @@ class Agent(Entity):
             loc_x = self.loc[0] + self.radius * cos(angle) * 1.1
             loc_y = self.loc[1] + self.radius * sin(angle) * 1.1
             result.append(Entity(
-                            [loc_x, loc_y],
-                            [vel_x, vel_y],
-                            10.0,
-                            10.0,
-                            0.0,
-                            self.image_scrap))
+                [loc_x, loc_y],
+                [vel_x, vel_y],
+                10.0,
+                10.0,
+                0.0,
+                self.image_scrap))
         return result
 
 class Projectile(Entity):
+    """ Class representing projectiles fired by Agents """
     def __init__(self, body, speed, damage, duration):
-        Entity.__init__(self, body.loc.copy(), body.vel.copy(), 0.01, 10.0, body.rotation, body.image_proj)
+        Entity.__init__(self, body.loc.copy(), body.vel.copy(), 0.01, 10.0,
+                        body.rotation, body.image_proj)
         self.damage = damage
         self.duration = duration
         # Owner # How would this get implemented?
@@ -291,8 +299,9 @@ class Projectile(Entity):
         self.rotation = atan2(self.vel[1], self.vel[0])
 
 class Star(Entity):
+    """ The star's representation.  A star is a centerpiece of the level where
+        everything orbits around """
     def __init__(self, loc, vel, radius, mass, img_path):
         Entity.__init__(self, loc, vel, mass, radius, 0, img_path)
         self.rotation = -math.pi/2.0 # Hack to make sure that Star object's
         self.mass = mass           # image renders correctly
-
