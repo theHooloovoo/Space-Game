@@ -33,12 +33,12 @@
 		lvl1 (level.Level) : The first level of the game
 """
 
+# Use pygame library
+import pygame
+
 from states import MenuState, push, top, size
 from entity import Agent, Entity, Star
 from level import Camera, Level
-
-# Use the pygame library
-import pygame
 
 # Used to write on the screen
 # font = pygame.font.SysFont("monospace", 12)
@@ -81,9 +81,9 @@ lvl1.add_ent(Entity([125, 125], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
 lvl1.add_ent(Entity([125, -125], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
 lvl1.add_ent(Entity([-125, 125], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
 lvl1.add_ent(Entity([-125, -125], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
-lvl1.add_ent(Entity([150, 0000], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
-lvl1.add_ent(Entity([-150, 0000], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
-lvl1.add_ent(Agent([-300, 0000], [1.00, 1.00], 1.0, 12.0, 0.0, 0.1, 2, img_ship0, img_shot1))
+lvl1.add_ent(Entity([150, 0], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
+lvl1.add_ent(Entity([-150, 0], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
+lvl1.add_ent(Agent([-300, 0], [1.00, 1.00], 1.0, 12.0, 0.0, 0.1, 2, img_ship0, img_shot1))
 
 # lvl1.add_ent(Star( [-700.0, 0.0], [0.0, 0.0], 10.0, 50.0, img_sun))
 
