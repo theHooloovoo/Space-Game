@@ -1,7 +1,13 @@
+#!usr/bin/env python3
+""" Level and view classes
+
+	Classes used as, somewhat, of a model component of MVC.
+	The Camera helps view the player and the Level contains
+	all the data used by the GameState to generate the level.
+"""
+import pygame
 
 from entity import Entity, Agent, Projectile, Star
-
-import pygame
 
 class Camera:
     """ This class is used to get different views into the level. This will
@@ -14,13 +20,14 @@ class Camera:
         self.move_speed = 1.0
 
     def move_to(self, loc):
+        """ Moves camera to a new location """
         self.loc = loc
 
-    def zoom_in(self, z):
+    def zoom_in(self, zoom):
         """ Increments the camera's zoom level by the given amount. The zoom
             value will never go below 0.1 or above 2.0.
         """
-        self.zoom += z
+        self.zoom += zoom
         if self.zoom <= 0.1:
             self.zoom = 0.1
         if self.zoom >= 2.0:
@@ -47,10 +54,8 @@ class Camera:
     def pointer_game_space(self, window, loc):
         """ Convert pixel location on screen into game-space. """
         # Given the pixel coordinates
-        dif_loc = [
-                   -1 * (loc[0] - window.get_width()/2 ),
-                   -1 * (loc[1] - window.get_height()/2)
-                  ]
+        dif_loc = [-1 * (loc[0] - window.get_width() / 2),
+                   -1 * (loc[1] - window.get_height() / 2)]
         # Scale
         dif_loc[0] /= self.get_zoom()
         dif_loc[1] /= self.get_zoom()
@@ -60,7 +65,17 @@ class Camera:
         return dif_loc
 
 class Level:
+    """ Contains all data related to the level
+    """
     def __init__(self, player, ents, agents, stars):
+        """ Initializes the level with entities
+
+			Arguments:
+			player -- The player class
+			ents -- List of entities in the level
+			agents -- List of agents in the level
+			stars -- List of stars in the level
+        """
         # View into the level
         self.cam = Camera()
         # Set of Entity sets that the level will manage
@@ -72,6 +87,11 @@ class Level:
         # self.background = ""
 
     def collision_check(self, dt):
+        """ Checks entities for collision
+
+			Attributes:
+			dt -- The time that has passed since last iteration
+        """
         # Check against Stars
         for sun in self.star_list:
             for ent in self.entity_list:
@@ -92,29 +112,29 @@ class Level:
         # Check Entities
         for ent in self.entity_list:
             for ent2 in self.entity_list:
-                if (ent != ent2) and (ent.is_touching(ent2)):
+                if ent != ent2 and ent.is_touching(ent2):
                     ent.resolve_collisions(ent2)
             for agent in self.agent_list:
-                if (ent.is_touching(agent)):
+                if ent.is_touching(agent):
                     ent.resolve_collisions(agent)
             for proj in self.projectile_list:
-                if (ent.is_touching(proj)):
+                if ent.is_touching(proj):
                     ent.resolve_collisions(proj)
         # Check Agents
         for ent in self.agent_list:
             for agent in self.agent_list:
-                if (ent != agent) and (ent.is_touching(agent)):
+                if ent != agent and ent.is_touching(agent):
                     ent.resolve_collisions(agent)
                     ent.harm(0.1 * dt)
             for proj in self.projectile_list:
-                if (ent != proj) and (ent.is_touching(proj)):
+                if ent != proj and ent.is_touching(proj):
                     ent.resolve_collisions(proj)
                     ent.harm(proj.damage)
                     proj.is_active = False
         # Check Projectiles
         for ent in self.projectile_list:
             for proj in self.projectile_list:
-                if (ent != proj) and (ent.is_touching(proj)):
+                if ent != proj and ent.is_touching(proj):
                     ent.resolve_collisions(proj)
                     ent.is_active = False
         # Check Player
@@ -132,16 +152,17 @@ class Level:
                 # self.player.resolve_collisions(proj)
                 self.player.harm(proj.damage)
                 proj.is_active = False
-    
+
     def cull_ents(self, dt):
+        """ This does something """
         # Remove an entity if they are not active.
         # Easy way of destructively mutating a list
-        self.entity_list     = [n for n in self.entity_list
-                                if n.is_active == True]
-        self.agent_list      = [n for n in self.agent_list
-                                if n.is_active == True]
+        self.entity_list = [n for n in self.entity_list
+                            if n.is_active]
+        self.agent_list = [n for n in self.agent_list
+                           if n.is_active]
         self.projectile_list = [n for n in self.projectile_list
-                                if n.is_active == True]
+                                if n.is_active]
         # Tick each of the projectile durations
         for proj in self.projectile_list:
             proj.duration -= 0.01 * dt
@@ -152,6 +173,7 @@ class Level:
         """ Adds the given Entity to one of the Level's internal lists of
             Entitys.
         """
+		# pylint: disable=C0123
         if   type(ent) == Star:
             self.star_list.append(ent)
         elif type(ent) == Projectile:
@@ -162,8 +184,14 @@ class Level:
             self.entity_list.append(ent)
         else:
             print("Err: Couldn't add object to level!")
+        # pylint: enable=C0123
 
     def step_game_logic(self, dt):
+        """ Iterates the game information and mechanics
+
+			Arguments:
+			dt -- Time passed since last iteration
+        """
         self.collision_check(dt)
         self.cull_ents(dt)
         # This part is for testing!
@@ -180,19 +208,19 @@ class Level:
             self.player.booster_fuel = self.player.booster_fuel_max
         # Enemy Logic
         for agent in self.agent_list:
-            if agent.health <= 0.0 and agent.is_active == True:
+            if agent.health <= 0.0 and agent.is_active:
                 for n in agent.explode():
                     self.add_ent(n)
                 # Make sure the agent doesn't re-explode!
                 agent.is_active = False
                 # print("exploded")
-        for n in range(0,len(self.agent_list),-1):
-            if self.agent_list[n].is_alive == False:
+        for n in range(0, len(self.agent_list), -1):
+            if self.agent_list[n].is_alive:
                 self.agent_list.remove(self.agent_list[n])
         # Move camera
-        d_sqrd = self.player.loc[0]**2 + self.player.loc[1]**2
-        mod = 1- (1 / (1 + (0.00001 * d_sqrd))) # Fancy math
-        self.cam.loc = [self.player.loc[0]*mod, self.player.loc[1]*mod]
+        d_sqrd = self.player.loc[0] ** 2 + self.player.loc[1] ** 2
+        mod = 1 - (1 / (1 + (0.00001 * d_sqrd))) # Fancy math
+        self.cam.loc = [self.player.loc[0] * mod, self.player.loc[1] * mod]
 
     def step_physics(self, dt):
         """ Iterate the physics for all of the Entity's in the level. This
@@ -237,8 +265,13 @@ class Level:
             e.clear_force()
 
     def draw_all(self, window):
+        """ Draws all the entities in the level
+
+			Arguments:
+			window -- Surface to draw entities to
+        """
         # Clear the window so that all of the pixels are black
-        window.fill([0,0,0])
+        window.fill([0, 0, 0])
         # Step through each list, and draw the Entitys
         for e in self.star_list:
             e.draw(window, self.cam)
@@ -253,5 +286,3 @@ class Level:
         # The currently drawn image was the back-buffer.
         # So now we need to swap buffers so the image displays.
         pygame.display.flip()
-
-
