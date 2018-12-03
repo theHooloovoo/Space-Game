@@ -42,6 +42,7 @@ import pygame
 from states import MenuState, push, top, size
 from entity import Agent, Entity, Star
 from level import Camera, Level
+import levels
 
 # Used to write on the screen
 # font = pygame.font.SysFont("monospace", 12)
@@ -101,7 +102,7 @@ for e in lvl1.entity_list:
 for e in lvl1.agent_list:
     e.vel = e.get_orbital_velocity(lvl1.star_list[0])
 
-push(MenuState(lvl1))
+push(MenuState(levels.lvl3))
 while size() > 0:
     top().run(window)
 
