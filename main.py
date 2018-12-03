@@ -33,6 +33,9 @@
 		lvl1 (level.Level) : The first level of the game
 """
 
+import copy
+from copy import copy
+
 # Use pygame library
 import pygame
 
@@ -60,6 +63,11 @@ img_rock1 = pygame.image.load("resource/asteroid_1.png")
 img_sun = pygame.image.load("resource/nasa_sun.png")
 img_shot1 = pygame.image.load("resource/projectile1.png")
 
+e = Entity([-100, 100], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1)
+e2 = copy(e)
+a = Agent([-300, 0], [1.00, 1.00], 1.0, 12.0, 0.0, 0.1, 2, img_ship0, img_shot1)
+a2 = copy(a)
+
 # player = Player( [400.0, 400.0], [1.00, 1.00], 50.0, 0.0, 0.1, 100, img)
 ent_list = []
 star_list = []
@@ -85,6 +93,7 @@ lvl1.add_ent(Entity([150, 0], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
 lvl1.add_ent(Entity([-150, 0], [0.00, 0.00], 10.0, 14.0, 0.0, img_rock1))
 lvl1.add_ent(Agent([-300, 0], [1.00, 1.00], 1.0, 12.0, 0.0, 0.1, 2, img_ship0, img_shot1))
 
+lvl2 = copy(lvl1)
 # lvl1.add_ent(Star( [-700.0, 0.0], [0.0, 0.0], 10.0, 50.0, img_sun))
 
 for e in lvl1.entity_list:
@@ -95,3 +104,4 @@ for e in lvl1.agent_list:
 push(MenuState(lvl1))
 while size() > 0:
     top().run(window)
+

@@ -38,6 +38,17 @@ class Entity:
         self.image = img
         self.is_active = True
 
+    def __copy__(self):
+        """ Copies the object's fields, except for the image that it carries.
+        """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        # Make copies of the vel and loc, so they are -seperate-.
+        result.loc = self.loc.copy()
+        result.vel = self.vel.copy()
+        return result
+
     def distance_to(self, body):
         """ Returns the euclidean distance to the given body, as a float.
         """
@@ -212,6 +223,17 @@ class Agent(Entity):
         self.health = health
         self.image_scrap = img  # Seperate image used for explosion()
         self.image_proj = proj  # seperate image used for shoot()
+
+    def __copy__(self):
+        """ Copies the object's fields, except for the image that it carries.
+        """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        # Make copies of the vel and loc, so they are -seperate-.
+        result.loc = self.loc.copy()
+        result.vel = self.vel.copy()
+        return result
 
     def turn(self, dt):
         """ Rotates the entity """

@@ -10,6 +10,9 @@
 			states.  This has stack methods that are module scoped.
 """
 
+import copy
+from copy import copy
+
 import sys
 import pygame
 
@@ -93,11 +96,12 @@ class MenuState(State):
     """ The controller for the main menu """
     def __init__(self, lvl):
         State.__init__(self)
+        self.internal_level = copy(lvl)
         self.font = pygame.font.Font("resource/courbd.ttf", 60)
         self.background = pygame.image.load("resource/menu_backdrop.jpg")
         self.index = 0
         self.buttons = [Button(pygame.image.load("resource/play_button.png"),
-                               [515, 300, 250, 75], lambda: push(GameState(lvl))),
+                               [515, 300, 250, 75], lambda: push(GameState(copy(lvl)))),
                         Button(pygame.image.load("resource/option_button.png"),
                                [515, 400, 250, 75], lambda: push(0)),
                         Button(pygame.image.load("resource/exit_button.png"),
@@ -108,7 +112,8 @@ class MenuState(State):
         self.buttons[self.index].highlight(True)
 
     def deactivate(self):
-        pass
+        self.buttons[0].command = Button(pygame.image.load("resource/play_button.png"),
+                               [515, 300, 250, 75], lambda: push(GameState(copy(self.internal_level)))),
 
     def run(self, window):
         """ Monitors user input for menu selections """

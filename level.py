@@ -5,6 +5,10 @@
 	The Camera helps view the player and the Level contains
 	all the data used by the GameState to generate the level.
 """
+
+import copy
+from copy import copy
+
 import pygame
 
 from entity import Entity, Agent, Projectile, Star
@@ -18,6 +22,14 @@ class Camera:
         self.loc = [0.0, 0.0]
         self.zoom = 1.0
         self.move_speed = 1.0
+
+    def __copy__(self):
+        """ Copies the camera object. """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        result.loc = self.loc.copy()
+        return result
 
     def move_to(self, loc):
         """ Moves camera to a new location """
@@ -85,6 +97,28 @@ class Level:
         self.agent_list = agents
         self.projectile_list = []
         # self.background = ""
+
+    def __copy__(self):
+        """ """
+        cls = self.__class__
+        result = cls.__new__(cls)
+        result.__dict__.update(self.__dict__)
+        # Copy each object in the lists over
+        e_vec = []
+        a_vec = []
+        s_vec = []
+        for e in self.entity_list:
+            e_vec.append(copy(e))
+        for a in self.agent_list:
+            a_vec.append(copy(a))
+        for s in self.star_list:
+            s_vec.append(copy(s))
+        result.entity_list = e_vec
+        result.agent_list = a_vec
+        result.star_list = s_vec
+        result.projectile_list = []
+        result.player = copy(self.player)
+        return result
 
     def collision_check(self, dt):
         """ Checks entities for collision
