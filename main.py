@@ -12,8 +12,6 @@
 		cam (level.Camera): View controller for maintaining porper view
 			of the player.
 
-		img (pygame.Surface): Useless image that is not used.
-
 		img_ship0 (pygame.Surface) : Enemy ship graphic
 
 		img_ship1 (pygame.Surface) : Player ship graphic
@@ -57,7 +55,6 @@ window = pygame.display.set_mode([1280, 800])
 cam = Camera()
 cam.move_to([0.0, 0.0])
 
-img = pygame.image.load("img.png")
 img_ship0 = pygame.image.load("resource/cursor.png")
 img_ship1 = pygame.image.load("resource/ship1.png")
 img_rock1 = pygame.image.load("resource/asteroid_1.png")
