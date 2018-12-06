@@ -10,6 +10,8 @@ from level import Camera, Level
 cam = Camera()
 cam.move_to([0.0, 0.0])
 
+level_list = []
+
 img_ship0 = pygame.image.load("resource/cursor.png")
 img_ship1 = pygame.image.load("resource/ship1.png")
 img_rock1 = pygame.image.load("resource/asteroid_1.png")
@@ -63,3 +65,4 @@ for e in lvl3.entity_list:
 for e in lvl3.agent_list:
     e.vel = e.get_orbital_velocity(lvl3.star_list[1])
 
+level_list = [lvl1, lvl2, lvl3]

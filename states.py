@@ -16,7 +16,7 @@ from copy import copy
 import sys
 import pygame
 
-from gui import Button
+from gui import Button, TextButton
 
 class State:
     """ Base class for all game "states" """
@@ -92,22 +92,98 @@ class PauseState(State):
             btn.draw(window)
         pygame.display.flip()
 
+class LevelSelectState(State):
+    """ The controller for a level selector menu """
+    def __init__(self, bg, lvls):
+        State.__init__(self)
+        self.levels = copy(lvls)
+        self.font = pygame.font.Font("resource/courbd.ttf", 36)
+        self.background = bg
+        self.index = 0
+        self.buttons = []
+        # Make buttons
+        count = 0
+        cur_width = 0
+        cur_height = 0
+        for i in lvls:
+            count += 1
+            s = "Level " + str(count)
+            self.buttons.append(
+                TextButton(self.font, s,
+                [cur_width + 100, cur_height + 150], 0))
+            cur_width += 50 + self.font.size(s)[0]
+            if cur_width >= 1180:
+                cur_height += self.font.size(s)[1] + 50
+                cur_width = 0
+
+    def select_level(self):
+        """ Selects the level based on the current index of the buttons """
+        push(GameState(copy(self.levels[self.index])))
+
+    def activate(self):
+        self.index = 0
+        self.buttons[self.index].highlight(True)
+
+    def deactivate(self):
+        pass
+
+    def run(self, window):
+        """ Runs the event loop for the menu
+            this entails navigation of the menu
+        """
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    pop()
+                elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
+                    if self.index >= 1:
+                        self.buttons[self.index].highlight(False)
+                        self.index -= 1
+                        self.buttons[self.index].highlight(True)
+                elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+                    if self.index < len(self.buttons) - 1:
+                        self.buttons[self.index].highlight(False)
+                        self.index += 1
+                        self.buttons[self.index].highlight(True)
+                elif event.key == pygame.K_RETURN:
+                    # self.buttons[self.index].click()
+                    self.select_level()
+        window.fill([0, 0, 0])
+        window.blit(self.background, [0, 0])
+
+        pos = self.font.size("Select Level")
+        pos = [window.get_width() / 2 - (pos[0] / 2),
+               window.get_height() / 8 - (pos[1] / 2)]
+        window.blit(self.font.render("Select Level", True, [250, 250, 250]), pos)
+
+        for btn in self.buttons:
+            btn.draw(window)
+
+        pygame.display.flip()
+
 class MenuState(State):
     """ The controller for the main menu """
-    def __init__(self, lvl):
+    def __init__(self, lvls):
         State.__init__(self)
-        self.internal_level = copy(lvl)
+        self.internal_levels = copy(lvls)
         self.font = pygame.font.Font("resource/courbd.ttf", 60)
         self.background = pygame.image.load("resource/menu_backdrop.jpg")
         self.index = 0
         self.buttons = [Button(pygame.image.load("resource/play_button.png"),
-                               [515, 300, 250, 75], lambda: push(GameState(copy(lvl)))),
+                               [515, 300, 250, 75], lambda: push(GameState(lvls[0]))),
+                        Button(pygame.image.load("resource/levels_button.png"),
+                               [515, 400, 250, 75],
+                               lambda: push(LevelSelectState(self.background, self.internal_levels))),
                         Button(pygame.image.load("resource/option_button.png"),
-                               [515, 400, 250, 75], lambda: push(0)),
+                               [515, 500, 250, 75], lambda: push(0)),
                         Button(pygame.image.load("resource/exit_button.png"),
-                               [515, 500, 250, 75], lambda: pop())]
+                               [515, 600, 250, 75], lambda: pop())]
 
     def activate(self):
+        for btn in self.buttons:
+            btn.highlight(False)
         self.index = 0
         self.buttons[self.index].highlight(True)
 
@@ -192,6 +268,7 @@ class GameState(State):
                     self.level.player.is_turning_left = False
                 if event.key == pygame.K_d:
                     self.level.player.is_turning_right = False
+
         # Physics
         self.level.step_physics(deltatime * 0.07)
         # Game Logic
