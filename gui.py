@@ -43,3 +43,35 @@ class Button:
     def draw(self, window):
         """ Draws the button to the the surface """
         window.blit(self.image, self.rect[:2])
+
+class TextButton:
+    """ A clickable object """
+    def __init__(self, font, text, pos, action):
+        """
+            Initialize a button
+
+            Arguments:
+            font -- Font to render text with
+            text -- Text to render
+            pos -- X and Y coordinate of the button
+            action -- action upon click of the button as a lambda function
+        """
+        self.image = font.render(text, False, [255, 255, 255])
+        self.image.set_alpha(BTN_NORMAL)
+        self.pos = pos
+        self.action = action
+
+    def highlight(self, b):
+        """ Highlights the button by increasing the alpha """
+        if b:
+            self.image.set_alpha(BTN_HIGHLIGHT)
+        else:
+            self.image.set_alpha(BTN_NORMAL)
+
+    def click(self):
+        """ Invokes the button's action. """
+        self.action()
+
+    def draw(self, window):
+        """ Draws the button to the the surface """
+        window.blit(self.image, self.pos)

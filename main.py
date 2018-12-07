@@ -99,7 +99,6 @@ for e in lvl1.entity_list:
 for e in lvl1.agent_list:
     e.vel = e.get_orbital_velocity(lvl1.star_list[0])
 
-push(MenuState(levels.lvl3))
+push(MenuState(levels.level_list))
 while size() > 0:
     top().run(window)
-
