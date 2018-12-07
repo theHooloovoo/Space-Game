@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>entity.Agent</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="entity-module.html">Module&nbsp;entity</a> ::
+        Class&nbsp;Agent
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="entity.Agent-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Agent</h1><p class="nomargin-top"><span class="codelink"><a href="entity-pysrc.html#Agent">source&nbsp;code</a></span></p>
+<pre class="base-tree">
+<a href="entity.Entity-class.html">Entity</a> --+
+         |
+        <strong class="uidshort">Agent</strong>
+</pre>
+
+<hr />
+<p>Extension of the Entity class. Used as the basic agents of the 
+  game.</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="entity.Agent-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">loc</span>,
+        <span class="summary-sig-arg">vel</span>,
+        <span class="summary-sig-arg">mass</span>,
+        <span class="summary-sig-arg">radius</span>,
+        <span class="summary-sig-arg">rotation</span>,
+        <span class="summary-sig-arg">booster_speed</span>,
+        <span class="summary-sig-arg">health</span>,
+        <span class="summary-sig-arg">img</span>,
+        <span class="summary-sig-arg">proj</span>)</span><br />
+      loc &amp; vel are both [float; 2].</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="entity.Agent-class.html#__copy__" class="summary-sig-name">__copy__</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Copies the object's fields, except for the image that it carries.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.__copy__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="turn"></a><span class="summary-sig-name">turn</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dt</span>)</span><br />
+      Rotates the entity</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.turn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="harm"></a><span class="summary-sig-name">harm</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">damage</span>)</span><br />
+      Decrement the Agent's health.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.harm">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="use_booster"></a><span class="summary-sig-name">use_booster</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">dt</span>)</span><br />
+      Add the force of the Agent's booster if it is active.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.use_booster">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="shoot"></a><span class="summary-sig-name">shoot</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">speed</span>,
+        <span class="summary-sig-arg">damage</span>,
+        <span class="summary-sig-arg">duration</span>)</span><br />
+      Fires a projectile</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.shoot">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="stabilize_orbit"></a><span class="summary-sig-name">stabilize_orbit</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">body</span>,
+        <span class="summary-sig-arg">counter_clockwise</span>=<span class="summary-sig-default">True</span>)</span><br />
+      Stabilizes orbit by targeting a velocity</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.stabilize_orbit">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="explode"></a><span class="summary-sig-name">explode</span>(<span class="summary-sig-arg">self</span>)</span><br />
+      Explode an entity</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="entity-pysrc.html#Agent.explode">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="entity.Entity-class.html">Entity</a></code></b>:
+      <code><a href="entity.Entity-class.html#clear_force">clear_force</a></code>,
+      <code><a href="entity.Entity-class.html#delta_location">delta_location</a></code>,
+      <code><a href="entity.Entity-class.html#delta_velocity">delta_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#distance_to">distance_to</a></code>,
+      <code><a href="entity.Entity-class.html#distance_to_squared">distance_to_squared</a></code>,
+      <code><a href="entity.Entity-class.html#draw">draw</a></code>,
+      <code><a href="entity.Entity-class.html#get_location">get_location</a></code>,
+      <code><a href="entity.Entity-class.html#get_orbital_velocity">get_orbital_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#is_touching">is_touching</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_force">iterate_force</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_location">iterate_location</a></code>,
+      <code><a href="entity.Entity-class.html#iterate_velocity">iterate_velocity</a></code>,
+      <code><a href="entity.Entity-class.html#look_at">look_at</a></code>,
+      <code><a href="entity.Entity-class.html#point_to">point_to</a></code>,
+      <code><a href="entity.Entity-class.html#resolve_collisions">resolve_collisions</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="entity.Entity-class.html">Entity</a></code></b>:
+      <code><a href="entity.Entity-class.html#DAMP_DIST">DAMP_DIST</a></code>,
+      <code><a href="entity.Entity-class.html#GRAV">GRAV</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">loc</span>,
+        <span class="sig-arg">vel</span>,
+        <span class="sig-arg">mass</span>,
+        <span class="sig-arg">radius</span>,
+        <span class="sig-arg">rotation</span>,
+        <span class="sig-arg">booster_speed</span>,
+        <span class="sig-arg">health</span>,
+        <span class="sig-arg">img</span>,
+        <span class="sig-arg">proj</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="entity-pysrc.html#Agent.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>loc &amp; vel are both [float; 2]. radius &amp; rotation are both 
+  float img is a pygame.image.Surface</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="entity.Entity-class.html#__init__">Entity.__init__</a>
+        <dd><em class="note">(inherited documentation)</em></dd>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__copy__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__copy__</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="entity-pysrc.html#Agent.__copy__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Copies the object's fields, except for the image that it carries.</p>
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="entity.Entity-class.html#__copy__">Entity.__copy__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+      <th class="navbar" width="100%"></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1
+    on Fri Dec  7 04:33:30 2018
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
