@@ -96,7 +96,9 @@ class LevelSelectState(State):
     """ The controller for a level selector menu """
     def __init__(self, bg, lvls):
         State.__init__(self)
-        self.levels = copy(lvls)
+        self.levels = []
+        for i in lvls:
+            self.levels.append(copy(i))
         self.font = pygame.font.Font("resource/courbd.ttf", 36)
         self.background = bg
         self.index = 0
