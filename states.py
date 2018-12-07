@@ -25,15 +25,12 @@ class State:
 
     def activate(self):
         """ Called whenever the state moves to the top of the stack """
-        pass
 
     def deactivate(self):
         """ Called whenever the state is no longer the top of the stack """
-        pass
 
     def run(self, window):
         """ Called iteratively while the state is the top of the stack """
-        pass
 
 class PauseState(State):
     """ The controller for the pause menu """
@@ -46,11 +43,11 @@ class PauseState(State):
         self.menu_location = [465, 150]
         self.index = 0
         self.buttons = [Button(pygame.image.load("resource/return_button.png"),
-                               [515, 320, 250, 75], lambda: pop()),
+                               [515, 320, 250, 75], pop),
                         Button(pygame.image.load("resource/option_button.png"),
                                [515, 430, 250, 75], lambda: push(0)),
                         Button(pygame.image.load("resource/exit_button.png"),
-                               [515, 540, 250, 75], lambda: sys.exit())]
+                               [515, 540, 250, 75], sys.exit)]
 
     def activate(self):
         self.index = 0
@@ -109,13 +106,13 @@ class LevelSelectState(State):
         cur_height = 0
         for i in lvls:
             count += 1
-            s = "Level " + str(count)
+            text = "Level " + str(count)
             self.buttons.append(
-                TextButton(self.font, s,
-                [cur_width + 100, cur_height + 150], 0))
-            cur_width += 50 + self.font.size(s)[0]
+                TextButton(self.font, text,
+                           [cur_width + 100, cur_height + 150], 0))
+            cur_width += 50 + self.font.size(text)[0]
             if cur_width >= 1180:
-                cur_height += self.font.size(s)[1] + 50
+                cur_height += self.font.size(text)[1] + 50
                 cur_width = 0
 
     def select_level(self):
@@ -169,17 +166,16 @@ class MenuState(State):
     """ The controller for the main menu """
     def __init__(self, lvls):
         State.__init__(self)
-        self.internal_levels = copy(lvls)
+        self.levels = copy(lvls)
         self.font = pygame.font.Font("resource/courbd.ttf", 60)
         self.background = pygame.image.load("resource/menu_backdrop.jpg")
         self.index = 0
         self.buttons = [Button(pygame.image.load("resource/play_button.png"),
                                [515, 300, 250, 75], lambda: push(GameState(lvls[0]))),
-                        Button(pygame.image.load("resource/levels_button.png"),
-                               [515, 400, 250, 75],
-                               lambda: push(LevelSelectState(self.background, self.internal_levels))),
+                        Button(pygame.image.load("resource/levels_button.png"), [515, 400, 250, 75],
+                               lambda: push(LevelSelectState(self.background, self.levels))),
                         Button(pygame.image.load("resource/exit_button.png"),
-                               [515, 500, 250, 75], lambda: pop())]
+                               [515, 500, 250, 75], pop)]
 
     def activate(self):
         for btn in self.buttons:
@@ -189,7 +185,8 @@ class MenuState(State):
 
     def deactivate(self):
         self.buttons[0].command = Button(pygame.image.load("resource/play_button.png"),
-                               [515, 300, 250, 75], lambda: push(GameState(copy(self.internal_level)))),
+					 [515, 300, 250, 75],
+			                 lambda: push(GameState(copy(self.levels[0])))),
 
     def run(self, window):
         """ Monitors user input for menu selections """
