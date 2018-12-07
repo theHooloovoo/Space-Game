@@ -226,12 +226,16 @@ class GameState(State):
     def __init__(self, lvl):
         State.__init__(self)
         self.frame_count = 0
-        self.level = lvl
+        self.level = copy(lvl)
+        self.backup = copy(lvl) # Do not touch!!
         self.delta_time = 1.0
         self.timer = pygame.time.Clock()
         self.elapsed_time = self.timer.tick()
+        self.time_since_win = 0
+        self.shoot_timer = 0
 
     def activate(self):
+        self.level = copy(self.backup)
         self.timer = pygame.time.Clock()
 
     def deactivate(self):
@@ -239,7 +243,8 @@ class GameState(State):
 
     def run(self, window):
         self.frame_count += 1
-        deltatime = self.timer.tick()
+        deltatime = self.timer.tick() * 0.70
+        self.shoot_timer += deltatime
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
@@ -269,7 +274,22 @@ class GameState(State):
         # Physics
         self.level.step_physics(deltatime * 0.07)
         # Game Logic
+        self.level.cull_far()
         self.level.step_game_logic(deltatime)
+        x = False
+        for a in self.level.agent_list:
+            a.shoot(10, 10, 1000)
+            if a.is_alive == True:
+                x = True
+                if self.shoot_timer >= 10:
+                    a.shoot(1, 1, 100)
+                    self.shoot_timer = 0
+        if x == False:
+            self.time_since_win += deltatime
+        if self.time_since_win >= 700:
+            pop()
+        if self.timer == 0:
+            self.timer = self.timer + self.delta_time
         # Paint
         self.level.draw_all(window)
         # Quit if player dies

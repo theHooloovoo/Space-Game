@@ -6,6 +6,9 @@
 	all the data used by the GameState to generate the level.
 """
 
+import math
+from math import sqrt
+
 import copy
 from copy import copy
 
@@ -217,7 +220,7 @@ class Level:
         elif type(ent) == Entity:
             self.entity_list.append(ent)
         else:
-            print("Err: Couldn't add object to level!")
+            print("Err: Couldn't add object to level!", type(ent))
         # pylint: enable=C0123
 
     def step_game_logic(self, dt):
@@ -297,6 +300,11 @@ class Level:
             e.clear_force()
         for e in self.projectile_list:
             e.clear_force()
+
+    def cull_far(self):
+        for a in self.agent_list:
+            if sqrt(a.loc[0]**2 + a.loc[1]**2) >= 1000:
+                a.is_active = False
 
     def draw_all(self, window):
         """ Draws all the entities in the level
