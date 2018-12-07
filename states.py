@@ -178,10 +178,8 @@ class MenuState(State):
                         Button(pygame.image.load("resource/levels_button.png"),
                                [515, 400, 250, 75],
                                lambda: push(LevelSelectState(self.background, self.internal_levels))),
-                        Button(pygame.image.load("resource/option_button.png"),
-                               [515, 500, 250, 75], lambda: push(0)),
                         Button(pygame.image.load("resource/exit_button.png"),
-                               [515, 600, 250, 75], lambda: pop())]
+                               [515, 500, 250, 75], lambda: pop())]
 
     def activate(self):
         for btn in self.buttons:
